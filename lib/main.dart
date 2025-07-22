@@ -110,6 +110,7 @@ class _PasswordFieldState extends State<PasswordField> {
       obscureText: _ObscureText,
       decoration: InputDecoration(
         labelText: 'Password',
+        contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 14),
         hintStyle: TextStyle(
           fontFamily: "Inter",
           fontSize: 10,
@@ -136,285 +137,256 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Scaffold(
-        body: Stack(
-          children: [
-            Container(color: Color(0xFF3B1B9C)),
-
-            Opacity(
-              opacity: 0.5,
-              child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('images/Phone.jpg'),
-                    fit: BoxFit.cover,
-                  ),
+    return Scaffold(
+      body: Stack(
+        children: [
+          Container(color: Color(0xFF3B1B9C)),
+          Opacity(
+            opacity: 0.5,
+            child: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('images/Phone.jpg'),
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
+          ),
 
-            Align(
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding: EdgeInsets.only(top: 110),
-                child: Text(
-                  'WELCOME!',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-
-            SafeArea(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(37),
-                    topRight: Radius.circular(37),
-                  ),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 700,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(37),
-                          topRight: Radius.circular(37),
-                        ),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.3),
-                          width: 1.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            Align(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 260),
-                child: Text(
-                  'Go ahead and Sign in your account',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 21,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-
-            Padding(
-              padding: EdgeInsets.only(top: 580, left: 25),
-              child: ElevatedButton(
-                onPressed: () {},
-
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF3B1B9C),
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(horizontal: 145, vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: Text(
-                  'CONTINUE',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-
-            Align(
-              alignment: Alignment.center,
-
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 210),
-
-                child: Text(
-                  'Sign in to enjoy the best experience',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 15,
-                    color: Color(0xFFBDBDBD),
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-            ),
-
-            Align(
-              alignment: Alignment.center,
-
-              child: Padding(
-                padding: EdgeInsets.only(top: 750),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: 'By clicking continue, you agree to our',
-                          ),
-                          TextSpan(
-                            text: 'Terms of Service',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ],
-                      ),
-                    ),
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
-                        children: [
-                          TextSpan(text: 'and'),
-                          TextSpan(
-                            text: ' Privacy Policy',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            Align(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 370, left: 0),
-                child: AuthSwitcher(),
-              ),
-            ),
-
-            Padding(
-              padding: EdgeInsets.only(top: 370),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                child: TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Email Address',
-                    hintStyle: TextStyle(
+          Column(
+            children: [
+              SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 110),
+                  child: Text(
+                    'WELCOME',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                       fontFamily: 'Inter',
-                      color: Color(0xFF818181),
-                      fontSize: 10,
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      fontSize: 24,
                     ),
                   ),
                 ),
               ),
-            ),
+              Spacer(),
 
-            Padding(
-              padding: EdgeInsets.only(top: 450),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                child: PasswordField(),
-              ),
-            ),
-
-            SafeArea(
-              child: Padding(
-                padding: EdgeInsets.only(left: 29, top: 650),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 160,
-                      child: Divider(color: Color(0xFFE6E6E6), thickness: 1),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(
-                        'or',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 14,
-                          color: Color(0xFFBDBDBD),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 160,
-                      child: Divider(color: Color(0xFFE6E6E6), thickness: 1),
-                    ),
-                  ],
+              ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(37),
+                  topRight: Radius.circular(37),
                 ),
-              ),
-            ),
-
-            SafeArea(
-              child: Padding(
-                padding: EdgeInsets.only(left: 26, top: 700),
-                child: SizedBox(
-                  width: 360,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      minimumSize: Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 700,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(37),
+                        topRight: Radius.circular(37),
+                      ),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.3),
+                        width: 1.5,
                       ),
                     ),
-                    onPressed: () {},
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset('images/Google.png', height: 24),
-                        SizedBox(width: 12),
-                        Text(
-                          'Continue with Google',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 24,
+                      ),
+
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 0),
+                          AuthSwitcher(),
+
+                          SizedBox(height: 12),
+                          Text(
+                            'Go ahead and Sign in your account',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 21,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 6),
+                          Text(
+                            'Sign in to enjoy the best experience',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xFFBDBDBD),
+                              fontSize: 15,
+                            ),
+                          ),
+
+                          SizedBox(height: 35),
+
+                          TextField(
+                            decoration: InputDecoration(
+                              labelText: 'Email Address',
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: 20,
+                                horizontal: 14,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: 20),
+                          PasswordField(),
+
+                          SizedBox(height: 50),
+
+                          ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF3B1B9C),
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 145,
+                                vertical: 16,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: Text(
+                              'CONTINUE',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+
+                          Row(
+                            children: [
+                              SizedBox(height: 80),
+                              SizedBox(
+                                width: 160,
+                                child: Divider(
+                                  color: Color(0xFFE6E6E6),
+                                  thickness: 1,
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8),
+                                child: Text(
+                                  'Or',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14,
+                                    color: Color(0xFFBDBDBD),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 160,
+                                child: Divider(
+                                  color: Color(0xFFE6E6E6),
+                                  thickness: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          SizedBox(
+                            width: 360,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: Colors.black,
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                minimumSize: Size(double.infinity, 50),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset('images/Google.png', height: 24),
+                                  SizedBox(width: 12),
+                                  Text(
+                                    'Continue with Google',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(height: 30),
+                              RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text:
+                                          'By clicking continue, you agree to our',
+                                    ),
+                                    TextSpan(
+                                      text: 'Terms of Service',
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
+                                  children: [
+                                    TextSpan(text: 'and '),
+                                    TextSpan(
+                                      text: 'Privacy Policy',
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        ],
       ),
     );
   }
