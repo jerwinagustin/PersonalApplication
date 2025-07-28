@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 
 import 'package:personal_application/DiaryPage/Diary.dart';
+import 'package:personal_application/LoginPage/forgotPassword.dart';
 
 class AuthSwitcher extends StatelessWidget {
   final bool isLogin;
@@ -144,24 +145,26 @@ class _RememberMe extends State<RememberMe> {
   }
 }
 
-class ForgetPassword extends StatefulWidget {
-  const ForgetPassword({super.key});
-
-  @override
-  State<ForgetPassword> createState() => _ForgotPassword();
-}
-
-class _ForgotPassword extends State<ForgetPassword> {
+class ForgotPassword extends StatelessWidget {
+  const ForgotPassword({super.key});
   @override
   Widget build(BuildContext context) {
-    return Text(
-      'Forgot Password?',
-      style: TextStyle(
-        fontFamily: 'Inter',
-        fontSize: 11,
-        fontWeight: FontWeight.w500,
-        color: Colors.black,
+    return GestureDetector(
+      child: Text(
+        'Forgot Password?',
+        style: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+          color: Colors.black,
+        ),
       ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => forgotPassword()),
+        );
+      },
     );
   }
 }
@@ -417,7 +420,7 @@ class _LoginPage extends State<LoginPage> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             RememberMe(),
-                                            ForgetPassword(),
+                                            ForgotPassword(),
                                           ],
                                         ),
                                         SizedBox(height: 10),
