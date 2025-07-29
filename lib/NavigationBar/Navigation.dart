@@ -28,7 +28,7 @@ class _Navigation extends State<Navigation> {
     return Scaffold(
       body: pages[select],
       bottomNavigationBar: Container(
-        height: 80, // ⬅️ Adjust height here
+        height: 80,
         decoration: BoxDecoration(
           color: Color(0xFF03000F),
           borderRadius: BorderRadius.only(
