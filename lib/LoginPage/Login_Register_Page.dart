@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:personal_application/DiaryPage/Diary.dart';
 import 'package:personal_application/LoginPage/forgotPassword.dart';
+import 'package:personal_application/NavigationBar/Navigation.dart';
 
 class AuthSwitcher extends StatelessWidget {
   final bool isLogin;
@@ -430,7 +431,8 @@ class _LoginPage extends State<LoginPage> {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => Diary(),
+                                                builder: (context) =>
+                                                    Navigation(),
                                               ),
                                             );
                                           },
