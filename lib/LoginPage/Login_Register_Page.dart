@@ -1,7 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:personal_application/Auth/Authservice.dart';
 import 'dart:ui';
-
-import 'package:personal_application/DiaryPage/Diary.dart';
 import 'package:personal_application/LoginPage/forgotPassword.dart';
 import 'package:personal_application/NavigationBar/Navigation.dart';
 
@@ -80,7 +80,8 @@ class AuthSwitcher extends StatelessWidget {
 }
 
 class PasswordField extends StatefulWidget {
-  const PasswordField({super.key});
+  final TextEditingController controller;
+  const PasswordField({super.key, required this.controller});
 
   @override
   State<PasswordField> createState() => _PasswordFieldState();
@@ -92,6 +93,7 @@ class _PasswordFieldState extends State<PasswordField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: widget.controller,
       obscureText: _ObscureText,
       decoration: InputDecoration(
         labelText: 'Password',
@@ -161,10 +163,7 @@ class ForgotPassword extends StatelessWidget {
         ),
       ),
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => forgotPassword()),
-        );
+        Navigator.pushNamed(context, forgotPassword.id);
       },
     );
   }
@@ -243,6 +242,7 @@ class _ConfirmPassword extends State<ConfirmPassword> {
 }
 
 class LoginPage extends StatefulWidget {
+  static const String id = 'LoginPage';
   const LoginPage({super.key});
 
   @override
@@ -250,16 +250,67 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPage extends State<LoginPage> {
+  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmpasswordController = TextEditingController();
   bool isLogin = true;
   String? passwordMessage;
   bool? passwordMatch;
+  String errorMessage = '';
 
   @override
   void initState() {
     super.initState();
     confirmpasswordController.addListener(checkPasswordMatch);
+  }
+
+  void Register() async {
+    try {
+      await authService.value.createAccount(
+        email: emailController.text,
+        password: confirmpasswordController.text,
+        username: usernameController.text,
+      );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Registration Successful!'),
+            content: Text(
+              "Welcome, ${usernameController.text}! you can now log in.",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  ToggleAuth(true);
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message ?? 'There is an error';
+      });
+    }
+  }
+
+  void Login() async {
+    try {
+      await authService.value.signIn(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      Navigator.pushNamed(context, Navigation.id);
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message ?? 'There is an error';
+      });
+    }
   }
 
   void checkPasswordMatch() {
@@ -386,7 +437,7 @@ class _LoginPage extends State<LoginPage> {
                             ),
                           ),
 
-                          SizedBox(height: 35),
+                          SizedBox(height: 30),
 
                           SingleChildScrollView(
                             child: AnimatedSwitcher(
@@ -396,6 +447,7 @@ class _LoginPage extends State<LoginPage> {
                                       key: ValueKey('login'),
                                       children: [
                                         TextField(
+                                          controller: emailController,
                                           decoration: InputDecoration(
                                             labelText: 'Email Address',
                                             filled: true,
@@ -414,7 +466,9 @@ class _LoginPage extends State<LoginPage> {
 
                                         SizedBox(height: 20),
 
-                                        PasswordField(),
+                                        PasswordField(
+                                          controller: passwordController,
+                                        ),
 
                                         Row(
                                           mainAxisAlignment:
@@ -424,17 +478,16 @@ class _LoginPage extends State<LoginPage> {
                                             ForgotPassword(),
                                           ],
                                         ),
-                                        SizedBox(height: 10),
+                                        Text(
+                                          errorMessage,
+                                          style: TextStyle(
+                                            color: Colors.redAccent,
+                                          ),
+                                        ),
 
                                         ElevatedButton(
                                           onPressed: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    Navigation(),
-                                              ),
-                                            );
+                                            Login();
                                           },
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Color(0xFF3B1B9C),
@@ -453,14 +506,14 @@ class _LoginPage extends State<LoginPage> {
                                             style: TextStyle(
                                               fontFamily: 'Inter',
                                               fontWeight: FontWeight.w500,
-                                              fontSize: 14,
+                                              fontSize: 13,
                                             ),
                                           ),
                                         ),
 
                                         Row(
                                           children: [
-                                            SizedBox(height: 80),
+                                            SizedBox(height: 60),
                                             SizedBox(
                                               width: 160,
                                               child: Divider(
@@ -542,7 +595,7 @@ class _LoginPage extends State<LoginPage> {
                                               text: TextSpan(
                                                 style: TextStyle(
                                                   fontFamily: 'Inter',
-                                                  fontSize: 15,
+                                                  fontSize: 12,
                                                   fontWeight: FontWeight.w500,
                                                   color: Colors.white,
                                                 ),
@@ -588,6 +641,7 @@ class _LoginPage extends State<LoginPage> {
                                       key: ValueKey('register'),
                                       children: [
                                         TextField(
+                                          controller: usernameController,
                                           decoration: InputDecoration(
                                             labelText: 'Username',
                                             filled: true,
@@ -607,6 +661,7 @@ class _LoginPage extends State<LoginPage> {
                                         SizedBox(height: 20),
 
                                         TextField(
+                                          controller: emailController,
                                           decoration: InputDecoration(
                                             labelText: 'Email Address',
                                             filled: true,
@@ -653,10 +708,18 @@ class _LoginPage extends State<LoginPage> {
                                             ),
                                           ),
 
-                                        SizedBox(height: 40),
+                                        Text(
+                                          errorMessage,
+                                          style: TextStyle(
+                                            color: Colors.redAccent,
+                                          ),
+                                        ),
+                                        SizedBox(height: 2),
 
                                         ElevatedButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Register();
+                                          },
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Color(0xFF3B1B9C),
                                             foregroundColor: Colors.white,
@@ -692,7 +755,7 @@ class _LoginPage extends State<LoginPage> {
                                                 text: TextSpan(
                                                   style: TextStyle(
                                                     fontFamily: 'Inter',
-                                                    fontSize: 15,
+                                                    fontSize: 12,
                                                     fontWeight: FontWeight.w500,
                                                     color: Colors.white,
                                                   ),

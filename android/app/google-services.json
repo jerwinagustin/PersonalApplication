@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "461342906551",
+    "project_id": "loglife-e0ad5",
+    "storage_bucket": "loglife-e0ad5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:461342906551:android:ce575ae527771b22635532",
+        "android_client_info": {
+          "package_name": "com.example.personal_application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOqJHOviHpJIF36leBaOE2Vl_GS0xryMw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 
 class forgotPassword extends StatelessWidget {
+  static const String id = 'forgotPassword';
   const forgotPassword({super.key});
 
   @override
