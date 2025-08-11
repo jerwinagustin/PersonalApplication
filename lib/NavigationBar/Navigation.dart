@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:personal_application/DiaryPage/Diary.dart';
+import 'package:personal_application/DiaryPage/DiaryNote.dart';
 
 class Navigation extends StatefulWidget {
   static const String id = 'Navigation';
@@ -75,10 +76,14 @@ class _Navigation extends State<Navigation> {
           ? Padding(
               padding: const EdgeInsets.only(bottom: 100),
               child: FloatingActionButton(
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    Navigator.pushNamed(context, Diarynote.id);
+                  });
+                },
                 backgroundColor: Color(0xFF4E2FB8),
-                child: Icon(Icons.add, color: Colors.white),
                 shape: CircleBorder(),
+                child: Icon(Icons.add, color: Colors.white),
               ),
             )
           : null,

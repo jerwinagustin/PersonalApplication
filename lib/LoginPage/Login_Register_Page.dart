@@ -305,6 +305,7 @@ class _LoginPage extends State<LoginPage> {
         email: emailController.text,
         password: passwordController.text,
       );
+      await Future.delayed(Duration(milliseconds: 500));
       Navigator.pushNamed(context, Navigation.id);
     } on FirebaseAuthException catch (e) {
       setState(() {

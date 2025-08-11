@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:personal_application/DiaryPage/DiaryNote.dart';
 import 'package:personal_application/LoginPage/Login_Register_Page.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         LoginPage.id: (context) => LoginPage(),
         forgotPassword.id: (context) => forgotPassword(),
         Navigation.id: (context) => Navigation(),
+        Diarynote.id: (context) => Diarynote(),
       },
       debugShowCheckedModeBanner: false,
     );
