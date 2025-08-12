@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:personal_application/DiaryDatabase/DiaryCRUD.dart';
 import 'package:personal_application/NavigationBar/Navigation.dart';
 
 class Diarynote extends StatefulWidget {
@@ -15,6 +16,9 @@ class _Diarynote extends State<Diarynote> {
   TextEditingController genre = TextEditingController();
   TextEditingController textNote = TextEditingController();
 
+  bool isLoading = false;
+  final FirestoreService _firestoreService = FirestoreService();
+
   @override
   void initState() {
     super.initState();
@@ -26,6 +30,96 @@ class _Diarynote extends State<Diarynote> {
         time.text = now.format(context);
       });
     });
+  }
+
+  Future<void> _saveNote() async {
+    if (title.text.trim().isEmpty) {
+      _showErrorDialog('Please enter a title');
+      return;
+    }
+
+    if (textNote.text.trim().isEmpty) {
+      _showErrorDialog('Please enter your note');
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      await _firestoreService.addNote(
+        title: title.text.trim(),
+        genre: genre.text.trim().isEmpty ? 'General' : genre.text.trim(),
+        note: textNote.text.trim(),
+      );
+      _showSuccessDialog();
+    } catch (e) {
+      _showErrorDialog('Failed to save note: $e');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color(0xFF170B3F),
+          title: Text(
+            'Error',
+            style: TextStyle(color: Colors.white, fontFamily: 'Inter'),
+          ),
+          content: Text(
+            message,
+            style: TextStyle(color: Colors.white, fontFamily: 'Inter'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'OK',
+                style: TextStyle(color: Color(0xFF3B1B9C), fontFamily: 'Inter'),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color(0xFF170B3F),
+          title: Text(
+            'Success',
+            style: TextStyle(color: Colors.white, fontFamily: 'Inter'),
+          ),
+          content: Text(
+            'Note saved successfully!',
+            style: TextStyle(color: Colors.white, fontFamily: 'Inter'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacementNamed(context, Navigation.id);
+              },
+              child: Text(
+                'OK',
+                style: TextStyle(color: Color(0xFF3B1B9C), fontFamily: 'Inter'),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -96,12 +190,10 @@ class _Diarynote extends State<Diarynote> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        setState(() {
-                                          Navigator.pushNamed(
-                                            context,
-                                            Navigation.id,
-                                          );
-                                        });
+                                        Navigator.pushReplacementNamed(
+                                          context,
+                                          Navigation.id,
+                                        );
                                       },
                                       child: Icon(
                                         Icons.arrow_back,
@@ -287,6 +379,8 @@ class _Diarynote extends State<Diarynote> {
 
                                       child: TextField(
                                         controller: textNote,
+                                        maxLines: null,
+                                        expands: true,
                                         style: TextStyle(
                                           fontFamily: 'Inter',
                                           fontSize: 12,
@@ -315,7 +409,7 @@ class _Diarynote extends State<Diarynote> {
                                 SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: isLoading ? null : _saveNote,
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Color(0xFF3B1B9C),
                                       padding: EdgeInsets.symmetric(
@@ -325,15 +419,24 @@ class _Diarynote extends State<Diarynote> {
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                     ),
-                                    child: Text(
-                                      'Save Note',
-                                      style: TextStyle(
-                                        fontFamily: 'Inter',
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                                    child: isLoading
+                                        ? SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                              strokeWidth: 2,
+                                            ),
+                                          )
+                                        : Text(
+                                            'Save Note',
+                                            style: TextStyle(
+                                              fontFamily: 'Inter',
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                   ),
                                 ),
                               ],
@@ -346,9 +449,25 @@ class _Diarynote extends State<Diarynote> {
                 ),
               ),
             ),
+            if (isLoading)
+              Container(
+                color: Colors.black54,
+                child: Center(
+                  child: CircularProgressIndicator(color: Color(0xFF3B1B9C)),
+                ),
+              ),
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    time.dispose();
+    title.dispose();
+    genre.dispose();
+    textNote.dispose();
+    super.dispose();
   }
 }

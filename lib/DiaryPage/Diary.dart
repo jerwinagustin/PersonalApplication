@@ -1,6 +1,194 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:personal_application/Auth/Authservice.dart';
 import 'package:intl/intl.dart';
+import 'package:personal_application/DiaryDatabase/DiaryCRUD.dart';
+import 'package:personal_application/DiaryPage/Update_Delete.dart';
+
+class Card extends StatefulWidget {
+  const Card({super.key});
+
+  @override
+  State<Card> createState() => _Card();
+}
+
+class _Card extends State<Card> {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirestoreService().getNotesStream(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List notesList = snapshot.data!.docs;
+          if (notesList.isEmpty) {
+            return Container(
+              height: 200,
+              child: Center(
+                child: Text(
+                  'No notes yet...',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontFamily: 'Inter',
+                  ),
+                ),
+              ),
+            );
+          }
+
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: notesList.length,
+            itemBuilder: (context, index) {
+              DocumentSnapshot document = notesList[index];
+              String docID = document.id;
+
+              Map<String, dynamic> data =
+                  document.data() as Map<String, dynamic>;
+              String Title = data['title'] ?? 'No Title';
+              String noteText = data['note'] ?? 'No Content';
+              String Genre = data['genre'] ?? 'General';
+              String Time = data['time'] ?? 'No Time';
+
+              bool isNewest = index == 0;
+
+              return Padding(
+                padding: EdgeInsets.only(bottom: 12),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UpdateDelete(
+                          docID: docID,
+                          title: Title,
+                          genre: Genre,
+                          note: noteText,
+                          time: Time,
+                        ),
+                      ),
+                    );
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 115,
+                      decoration: BoxDecoration(
+                        color: Color(0xFF150A3A),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 15,
+                          vertical: 9,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              Title,
+                              style: TextStyle(
+                                color: isNewest
+                                    ? Color(0xFFF5DA3C)
+                                    : Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: 'Inter',
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+
+                            SizedBox(height: 6),
+
+                            Expanded(
+                              child: Text(
+                                noteText,
+                                style: TextStyle(
+                                  color: Color(0xFFBDBDBD),
+                                  fontFamily: 'Inter',
+                                  fontSize: 12,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+
+                            SizedBox(height: 6),
+
+                            Row(
+                              children: [
+                                Text(
+                                  Time,
+                                  style: TextStyle(
+                                    color: Color(0xFF818181),
+                                    fontFamily: 'Inter',
+                                    fontSize: 10,
+                                  ),
+                                ),
+
+                                Spacer(),
+
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(4),
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 6,
+                                      vertical: 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFF3B1B9C),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Text(
+                                      Genre,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'Inter',
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        } else if (snapshot.hasError) {
+          return Container(
+            height: 200,
+            child: Center(
+              child: Text(
+                'Error loading notes',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 16,
+                  fontFamily: 'Inter',
+                ),
+              ),
+            ),
+          );
+        } else {
+          return Container(
+            height: 200,
+            child: Center(
+              child: CircularProgressIndicator(color: Color(0xFF3B1B9C)),
+            ),
+          );
+        }
+      },
+    );
+  }
+}
 
 class Diary extends StatefulWidget {
   const Diary({super.key});
@@ -17,7 +205,17 @@ class _Diary extends State<Diary> {
     if (user != null) {
       final displayName =
           user.displayName ?? user.email?.split('@')[0] ?? 'User';
-      return 'Good Afternoon, $displayName';
+      final hour = DateTime.now().hour;
+      String greeting;
+      if (hour < 12) {
+        greeting = 'Good Morning';
+      } else if (hour < 17) {
+        greeting = 'Good Afternoon';
+      } else {
+        greeting = 'Good Evening';
+      }
+
+      return '$greeting, $displayName';
     }
     return 'Good Afternoon, User';
   }
@@ -230,6 +428,10 @@ class _Diary extends State<Diary> {
                         },
                       ),
                     ),
+
+                    SizedBox(height: 19),
+
+                    Card(),
                   ],
                 ),
               ),
