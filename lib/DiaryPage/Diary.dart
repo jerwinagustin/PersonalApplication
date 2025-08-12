@@ -6,7 +6,9 @@ import 'package:personal_application/DiaryDatabase/DiaryCRUD.dart';
 import 'package:personal_application/DiaryPage/Update_Delete.dart';
 
 class Card extends StatefulWidget {
-  const Card({super.key});
+  final DateTime selectedDate;
+
+  const Card({super.key, required this.selectedDate});
 
   @override
   State<Card> createState() => _Card();
@@ -19,7 +21,16 @@ class _Card extends State<Card> {
       stream: FirestoreService().getNotesStream(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          List notesList = snapshot.data!.docs;
+          List allNotes = snapshot.data!.docs;
+
+          String selectedDateString =
+              '${widget.selectedDate.year}-${widget.selectedDate.month.toString().padLeft(2, '0')}-${widget.selectedDate.day.toString().padLeft(2, '0')}';
+
+          List notesList = allNotes.where((doc) {
+            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+            return data['dateOnly'] == selectedDateString;
+          }).toList();
+
           if (notesList.isEmpty) {
             return Container(
               height: 200,
@@ -273,7 +284,11 @@ class _Diary extends State<Diary> {
 
                     SafeArea(
                       child: Text(
-                        'Today',
+                        selectedDate.day == DateTime.now().day &&
+                                selectedDate.month == DateTime.now().month &&
+                                selectedDate.year == DateTime.now().year
+                            ? 'Today'
+                            : DateFormat('MMMM dd, yyyy').format(selectedDate),
                         style: TextStyle(
                           fontSize: 16,
                           fontFamily: 'Inter',
@@ -431,7 +446,7 @@ class _Diary extends State<Diary> {
 
                     SizedBox(height: 19),
 
-                    Card(),
+                    Card(selectedDate: selectedDate),
                   ],
                 ),
               ),

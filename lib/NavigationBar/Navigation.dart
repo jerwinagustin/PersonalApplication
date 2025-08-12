@@ -4,6 +4,7 @@ import 'package:personal_application/DiaryPage/DiaryNote.dart';
 
 class Navigation extends StatefulWidget {
   static const String id = 'Navigation';
+
   const Navigation({super.key});
 
   @override
@@ -15,8 +16,12 @@ class _Navigation extends State<Navigation> {
 
   static const List<Widget> pages = <Widget>[
     Diary(),
-    Center(child: Text('Weather Screen')),
-    Center(child: Text('Reminder Screen')),
+    Center(
+      child: Text('Weather Screen', style: TextStyle(color: Colors.white)),
+    ),
+    Center(
+      child: Text('Reminder Screen', style: TextStyle(color: Colors.white)),
+    ),
   ];
 
   void NavTap(int index) {
@@ -77,9 +82,7 @@ class _Navigation extends State<Navigation> {
               padding: const EdgeInsets.only(bottom: 100),
               child: FloatingActionButton(
                 onPressed: () {
-                  setState(() {
-                    Navigator.pushNamed(context, Diarynote.id);
-                  });
+                  Navigator.pushNamed(context, Diarynote.id);
                 },
                 backgroundColor: Color(0xFF4E2FB8),
                 shape: CircleBorder(),

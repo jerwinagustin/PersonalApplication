@@ -4,7 +4,9 @@ import 'package:personal_application/NavigationBar/Navigation.dart';
 
 class Diarynote extends StatefulWidget {
   static const String id = 'Diarynote';
-  const Diarynote({super.key});
+  final DateTime? selectedDate; // Add selectedDate parameter
+
+  const Diarynote({super.key, this.selectedDate});
 
   @override
   State<Diarynote> createState() => _Diarynote();
@@ -18,10 +20,14 @@ class _Diarynote extends State<Diarynote> {
 
   bool isLoading = false;
   final FirestoreService _firestoreService = FirestoreService();
+  late DateTime noteDate; // The date for which this note will be saved
 
   @override
   void initState() {
     super.initState();
+
+    // Use provided selectedDate or default to today
+    noteDate = widget.selectedDate ?? DateTime.now();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final now = TimeOfDay.now();
@@ -52,6 +58,7 @@ class _Diarynote extends State<Diarynote> {
         title: title.text.trim(),
         genre: genre.text.trim().isEmpty ? 'General' : genre.text.trim(),
         note: textNote.text.trim(),
+        selectedDate: noteDate,
       );
       _showSuccessDialog();
     } catch (e) {
@@ -201,13 +208,21 @@ class _Diarynote extends State<Diarynote> {
                                       ),
                                     ),
                                     SizedBox(width: 7),
-                                    Text(
-                                      'Add New Note',
-                                      style: TextStyle(
-                                        fontFamily: 'Inter',
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: Colors.white,
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Add New Note',
+                                            style: TextStyle(
+                                              fontFamily: 'Inter',
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
