@@ -20,7 +20,7 @@ class AuthSwitcher extends StatelessWidget {
     return Container(
       width: 350,
       height: 80,
-      padding: EdgeInsets.all(4),
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: Colors.grey.shade300,
         borderRadius: BorderRadius.circular(36),
@@ -29,10 +29,10 @@ class AuthSwitcher extends StatelessWidget {
         children: [
           AnimatedAlign(
             alignment: isLogin ? Alignment.centerLeft : Alignment.centerRight,
-            duration: Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 4),
+              margin: const EdgeInsets.symmetric(horizontal: 4),
               width: 160,
               height: 62,
               decoration: BoxDecoration(
@@ -46,13 +46,10 @@ class AuthSwitcher extends StatelessWidget {
               Expanded(
                 child: GestureDetector(
                   onTap: () => onToggle(true),
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       'Login',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        color: isLogin ? Colors.black : Color(0xFF747474),
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.w400),
                     ),
                   ),
                 ),
@@ -60,13 +57,10 @@ class AuthSwitcher extends StatelessWidget {
               Expanded(
                 child: GestureDetector(
                   onTap: () => onToggle(false),
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       'Register',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        color: !isLogin ? Colors.black : Color(0xFF747474),
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.w400),
                     ),
                   ),
                 ),
@@ -88,17 +82,20 @@ class PasswordField extends StatefulWidget {
 }
 
 class _PasswordFieldState extends State<PasswordField> {
-  bool _ObscureText = true;
+  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: widget.controller,
-      obscureText: _ObscureText,
+      obscureText: _obscureText,
       decoration: InputDecoration(
         labelText: 'Password',
-        contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 14),
-        hintStyle: TextStyle(
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 20,
+          horizontal: 14,
+        ),
+        hintStyle: const TextStyle(
           fontFamily: "Inter",
           fontSize: 10,
           color: Color(0xFF818181),
@@ -107,10 +104,10 @@ class _PasswordFieldState extends State<PasswordField> {
         fillColor: Colors.white,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         suffixIcon: IconButton(
-          icon: Icon(_ObscureText ? Icons.visibility_off : Icons.visibility),
+          icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
           onPressed: () {
             setState(() {
-              _ObscureText = !_ObscureText;
+              _obscureText = !_obscureText;
             });
           },
         ),
@@ -123,10 +120,10 @@ class RememberMe extends StatefulWidget {
   const RememberMe({super.key});
 
   @override
-  State<RememberMe> createState() => _RememberMe();
+  State<RememberMe> createState() => _RememberMeState();
 }
 
-class _RememberMe extends State<RememberMe> {
+class _RememberMeState extends State<RememberMe> {
   bool isChecked = false;
 
   @override
@@ -140,9 +137,9 @@ class _RememberMe extends State<RememberMe> {
               isChecked = value!;
             });
           },
-          side: BorderSide(color: Colors.white, width: 2),
+          side: const BorderSide(color: Colors.white, width: 2),
         ),
-        Text('Remember Me', style: TextStyle(color: Colors.white)),
+        const Text('Remember Me', style: TextStyle(color: Colors.white)),
       ],
     );
   }
@@ -153,13 +150,13 @@ class ForgotPassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: Text(
+      child: const Text(
         'Forgot Password?',
         style: TextStyle(
           fontFamily: 'Inter',
           fontSize: 11,
           fontWeight: FontWeight.w500,
-          color: Colors.black,
+          color: Colors.white,
         ),
       ),
       onTap: () {
@@ -175,28 +172,31 @@ class RegisterPasswordField extends StatefulWidget {
   const RegisterPasswordField({super.key, required this.controller});
 
   @override
-  State<RegisterPasswordField> createState() => _RegisterPasswordField();
+  State<RegisterPasswordField> createState() => _RegisterPasswordFieldState();
 }
 
-class _RegisterPasswordField extends State<RegisterPasswordField> {
-  bool _ObscureText = true;
+class _RegisterPasswordFieldState extends State<RegisterPasswordField> {
+  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: widget.controller,
-      obscureText: _ObscureText,
+      obscureText: _obscureText,
       decoration: InputDecoration(
         labelText: 'Password',
         filled: true,
         fillColor: Colors.white,
-        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 14,
+        ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         suffixIcon: IconButton(
-          icon: Icon(_ObscureText ? Icons.visibility_off : Icons.visibility),
+          icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
           onPressed: () {
             setState(() {
-              _ObscureText = !_ObscureText;
+              _obscureText = !_obscureText;
             });
           },
         ),
@@ -211,28 +211,31 @@ class ConfirmPassword extends StatefulWidget {
   const ConfirmPassword({super.key, required this.controller});
 
   @override
-  State<ConfirmPassword> createState() => _ConfirmPassword();
+  State<ConfirmPassword> createState() => _ConfirmPasswordState();
 }
 
-class _ConfirmPassword extends State<ConfirmPassword> {
-  bool _ObscureText = true;
+class _ConfirmPasswordState extends State<ConfirmPassword> {
+  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: widget.controller,
-      obscureText: _ObscureText,
+      obscureText: _obscureText,
       decoration: InputDecoration(
         labelText: 'Confirm Password',
         filled: true,
         fillColor: Colors.white,
-        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 14,
+        ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         suffixIcon: IconButton(
-          icon: Icon(_ObscureText ? Icons.visibility_off : Icons.visibility),
+          icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
           onPressed: () {
             setState(() {
-              _ObscureText = !_ObscureText;
+              _obscureText = !_obscureText;
             });
           },
         ),
@@ -246,14 +249,14 @@ class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPage();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPage extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> {
   final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final confirmpasswordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
   bool isLogin = true;
   String? passwordMessage;
   bool? passwordMatch;
@@ -262,21 +265,22 @@ class _LoginPage extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    confirmpasswordController.addListener(checkPasswordMatch);
+    confirmPasswordController.addListener(checkPasswordMatch);
   }
 
-  void Register() async {
+  void register() async {
     try {
       await authService.value.createAccount(
         email: emailController.text,
-        password: confirmpasswordController.text,
+        password: confirmPasswordController.text,
         username: usernameController.text,
       );
+      if (!mounted) return;
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Registration Successful!'),
+            title: const Text('Registration Successful!'),
             content: Text(
               "Welcome, ${usernameController.text}! you can now log in.",
             ),
@@ -284,9 +288,9 @@ class _LoginPage extends State<LoginPage> {
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  ToggleAuth(true);
+                  toggleAuth(true);
                 },
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           );
@@ -299,13 +303,14 @@ class _LoginPage extends State<LoginPage> {
     }
   }
 
-  void Login() async {
+  void login() async {
     try {
       await authService.value.signIn(
         email: emailController.text,
         password: passwordController.text,
       );
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (!mounted) return;
       Navigator.pushNamed(context, Navigation.id);
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -316,7 +321,7 @@ class _LoginPage extends State<LoginPage> {
 
   void checkPasswordMatch() {
     String password = passwordController.text.trim();
-    String confirm = confirmpasswordController.text.trim();
+    String confirm = confirmPasswordController.text.trim();
 
     setState(() {
       if (confirm.isEmpty) {
@@ -334,26 +339,27 @@ class _LoginPage extends State<LoginPage> {
 
   @override
   void dispose() {
+    usernameController.dispose();
+    emailController.dispose();
     passwordController.dispose();
-    confirmpasswordController.dispose();
+    confirmPasswordController.dispose();
     super.dispose();
   }
 
-  void ToggleAuth(bool showLogin) {
+  void toggleAuth(bool showLogin) {
     setState(() => isLogin = showLogin);
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
         children: [
-          Container(color: Color(0xFF3B1B9C)),
+          Container(color: const Color(0xFF3B1B9C)),
           Opacity(
             opacity: 0.5,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('images/Phone.jpg'),
                   fit: BoxFit.cover,
@@ -361,7 +367,6 @@ class _LoginPage extends State<LoginPage> {
               ),
             ),
           ),
-
           Column(
             children: [
               SafeArea(
@@ -369,7 +374,7 @@ class _LoginPage extends State<LoginPage> {
                   padding: const EdgeInsets.only(top: 110),
                   child: Text(
                     isLogin ? 'WELCOME BACK!' : 'JOIN IN!',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Inter',
@@ -378,430 +383,76 @@ class _LoginPage extends State<LoginPage> {
                   ),
                 ),
               ),
-              Spacer(),
-
-              ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(37),
-                  topRight: Radius.circular(37),
-                ),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 700,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(37),
-                        topRight: Radius.circular(37),
+              const Spacer(),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.7,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(37),
+                    topRight: Radius.circular(37),
+                  ),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(37),
+                          topRight: Radius.circular(37),
+                        ),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.3),
+                          width: 1.5,
+                        ),
                       ),
-                      border: Border.all(
-                        color: Colors.white.withOpacity(0.3),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 24,
-                      ),
-
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(height: 0),
-                          AuthSwitcher(isLogin: isLogin, onToggle: ToggleAuth),
-
-                          SizedBox(height: 12),
-                          Text(
-                            isLogin
-                                ? 'Go ahead and Sign in your account'
-                                : 'Go ahead and register your account',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 21,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 24,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            AuthSwitcher(
+                              isLogin: isLogin,
+                              onToggle: toggleAuth,
                             ),
-                          ),
-                          SizedBox(height: 6),
-                          Text(
-                            isLogin
-                                ? 'Sign in to enjoy the best experience'
-                                : 'Register to enjoy the best experience',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w400,
-                              color: Color(0xFFBDBDBD),
-                              fontSize: 15,
+                            const SizedBox(height: 12),
+                            Text(
+                              isLogin
+                                  ? 'Go ahead and Sign in your account'
+                                  : 'Go ahead and register your account',
+                              style: const TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 21,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                          ),
-
-                          SizedBox(height: 30),
-
-                          SingleChildScrollView(
-                            child: AnimatedSwitcher(
-                              duration: Duration(milliseconds: 300),
+                            const SizedBox(height: 6),
+                            Text(
+                              isLogin
+                                  ? 'Sign in to enjoy the best experience'
+                                  : 'Register to enjoy the best experience',
+                              style: const TextStyle(
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                                color: Color(0xFFBDBDBD),
+                                fontSize: 15,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 30),
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 300),
                               child: isLogin
-                                  ? Column(
-                                      key: ValueKey('login'),
-                                      children: [
-                                        TextField(
-                                          controller: emailController,
-                                          decoration: InputDecoration(
-                                            labelText: 'Email Address',
-                                            filled: true,
-                                            fillColor: Colors.white,
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                  vertical: 20,
-                                                  horizontal: 14,
-                                                ),
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                            ),
-                                          ),
-                                        ),
-
-                                        SizedBox(height: 20),
-
-                                        PasswordField(
-                                          controller: passwordController,
-                                        ),
-
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            RememberMe(),
-                                            ForgotPassword(),
-                                          ],
-                                        ),
-                                        Text(
-                                          errorMessage,
-                                          style: TextStyle(
-                                            color: Colors.redAccent,
-                                          ),
-                                        ),
-
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            Login();
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Color(0xFF3B1B9C),
-                                            foregroundColor: Colors.white,
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 145,
-                                              vertical: 16,
-                                            ),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                            ),
-                                          ),
-                                          child: Text(
-                                            'CONTINUE',
-                                            style: TextStyle(
-                                              fontFamily: 'Inter',
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                        ),
-
-                                        Row(
-                                          children: [
-                                            SizedBox(height: 60),
-                                            SizedBox(
-                                              width: 160,
-                                              child: Divider(
-                                                color: Color(0xFFE6E6E6),
-                                                thickness: 1,
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 8,
-                                              ),
-                                              child: Text(
-                                                'Or',
-                                                style: TextStyle(
-                                                  fontFamily: 'Inter',
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 14,
-                                                  color: Color(0xFFBDBDBD),
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 160,
-                                              child: Divider(
-                                                color: Color(0xFFE6E6E6),
-                                                thickness: 1,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-
-                                        SizedBox(
-                                          width: 360,
-                                          child: ElevatedButton(
-                                            onPressed: () {},
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.white,
-                                              foregroundColor: Colors.black,
-                                              padding: EdgeInsets.symmetric(
-                                                vertical: 16,
-                                              ),
-                                              minimumSize: Size(
-                                                double.infinity,
-                                                50,
-                                              ),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                              ),
-                                            ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Image.asset(
-                                                  'images/Google.png',
-                                                  height: 24,
-                                                ),
-                                                SizedBox(width: 12),
-                                                Text(
-                                                  'Continue with Google',
-                                                  style: TextStyle(
-                                                    fontFamily: 'Inter',
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 14,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-
-                                        Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            SizedBox(height: 30),
-                                            RichText(
-                                              textAlign: TextAlign.center,
-                                              text: TextSpan(
-                                                style: TextStyle(
-                                                  fontFamily: 'Inter',
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.white,
-                                                ),
-                                                children: [
-                                                  TextSpan(
-                                                    text:
-                                                        'By clicking continue, you agree to our',
-                                                  ),
-                                                  TextSpan(
-                                                    text: 'Terms of Service',
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            RichText(
-                                              textAlign: TextAlign.center,
-                                              text: TextSpan(
-                                                style: TextStyle(
-                                                  fontFamily: 'Inter',
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.white,
-                                                ),
-                                                children: [
-                                                  TextSpan(text: 'and '),
-                                                  TextSpan(
-                                                    text: 'Privacy Policy',
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    )
-                                  : Column(
-                                      key: ValueKey('register'),
-                                      children: [
-                                        TextField(
-                                          controller: usernameController,
-                                          decoration: InputDecoration(
-                                            labelText: 'Username',
-                                            filled: true,
-                                            fillColor: Colors.white,
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                  horizontal: 20,
-                                                  vertical: 14,
-                                                ),
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                            ),
-                                          ),
-                                        ),
-
-                                        SizedBox(height: 20),
-
-                                        TextField(
-                                          controller: emailController,
-                                          decoration: InputDecoration(
-                                            labelText: 'Email Address',
-                                            filled: true,
-                                            fillColor: Colors.white,
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                  horizontal: 20,
-                                                  vertical: 14,
-                                                ),
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                            ),
-                                          ),
-                                        ),
-
-                                        SizedBox(height: 20),
-
-                                        RegisterPasswordField(
-                                          controller: passwordController,
-                                        ),
-
-                                        SizedBox(height: 20),
-
-                                        ConfirmPassword(
-                                          controller: confirmpasswordController,
-                                        ),
-
-                                        if (passwordMessage != null)
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                              top: 8,
-                                            ),
-                                            child: Text(
-                                              passwordMessage!,
-                                              style: TextStyle(
-                                                fontFamily: 'Inter',
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500,
-                                                color: passwordMatch == true
-                                                    ? Colors.green
-                                                    : Colors.red,
-                                              ),
-                                            ),
-                                          ),
-
-                                        Text(
-                                          errorMessage,
-                                          style: TextStyle(
-                                            color: Colors.redAccent,
-                                          ),
-                                        ),
-                                        SizedBox(height: 2),
-
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            Register();
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Color(0xFF3B1B9C),
-                                            foregroundColor: Colors.white,
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 145,
-                                              vertical: 16,
-                                            ),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadiusGeometry.circular(
-                                                    12,
-                                                  ),
-                                            ),
-                                          ),
-                                          child: Text(
-                                            'REGISTER',
-                                            style: TextStyle(
-                                              fontFamily: 'Inter',
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 14,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-
-                                        SingleChildScrollView(
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              SizedBox(height: 62),
-                                              RichText(
-                                                textAlign: TextAlign.center,
-                                                text: TextSpan(
-                                                  style: TextStyle(
-                                                    fontFamily: 'Inter',
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: Colors.white,
-                                                  ),
-                                                  children: [
-                                                    TextSpan(
-                                                      text:
-                                                          'By clicking continue, you agree to our',
-                                                    ),
-                                                    TextSpan(
-                                                      text: 'Terms of Service',
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              RichText(
-                                                textAlign: TextAlign.center,
-                                                text: TextSpan(
-                                                  style: TextStyle(
-                                                    fontFamily: 'Inter',
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: Colors.white,
-                                                  ),
-                                                  children: [
-                                                    TextSpan(text: 'and '),
-                                                    TextSpan(
-                                                      text: 'Privacy Policy',
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                  ? _buildLoginForm()
+                                  : _buildRegisterForm(),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -811,6 +462,246 @@ class _LoginPage extends State<LoginPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildLoginForm() {
+    return Column(
+      key: const ValueKey('login'),
+      children: [
+        TextField(
+          controller: emailController,
+          decoration: InputDecoration(
+            labelText: 'Email Address',
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 20,
+              horizontal: 14,
+            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        ),
+
+        const SizedBox(height: 20),
+        PasswordField(controller: passwordController),
+        const SizedBox(height: 10),
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: const [RememberMe(), ForgotPassword()],
+        ),
+
+        const SizedBox(height: 10),
+        if (errorMessage.isNotEmpty)
+          Text(errorMessage, style: const TextStyle(color: Colors.redAccent)),
+        const SizedBox(height: 10),
+
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: login,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF3B1B9C),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: const Text(
+              'CONTINUE',
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w500,
+                fontSize: 13,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            const Expanded(
+              child: Divider(color: Color(0xFFE6E6E6), thickness: 1),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                'Or',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                  color: Color(0xFFBDBDBD),
+                ),
+              ),
+            ),
+            const Expanded(
+              child: Divider(color: Color(0xFFE6E6E6), thickness: 1),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('images/Google.png', height: 24),
+                const SizedBox(width: 12),
+                const Text(
+                  'Continue with Google',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 30),
+        RichText(
+          textAlign: TextAlign.center,
+          text: const TextSpan(
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+            children: [
+              TextSpan(text: 'By clicking continue, you agree to our '),
+              TextSpan(
+                text: 'Terms of Service',
+                style: TextStyle(color: Colors.black),
+              ),
+              TextSpan(text: ' and '),
+              TextSpan(
+                text: 'Privacy Policy',
+                style: TextStyle(color: Colors.black),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRegisterForm() {
+    return Column(
+      key: const ValueKey('register'),
+      children: [
+        TextField(
+          controller: usernameController,
+          decoration: InputDecoration(
+            labelText: 'Username',
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 14,
+            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        ),
+        const SizedBox(height: 20),
+        TextField(
+          controller: emailController,
+          decoration: InputDecoration(
+            labelText: 'Email Address',
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 14,
+            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        ),
+        const SizedBox(height: 20),
+        RegisterPasswordField(controller: passwordController),
+        const SizedBox(height: 20),
+        ConfirmPassword(controller: confirmPasswordController),
+        if (passwordMessage != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(
+              passwordMessage!,
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: passwordMatch == true ? Colors.green : Colors.red,
+              ),
+            ),
+          ),
+        if (errorMessage.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(
+              errorMessage,
+              style: const TextStyle(color: Colors.redAccent),
+            ),
+          ),
+        const SizedBox(height: 10),
+        ElevatedButton(
+          onPressed: register,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF3B1B9C),
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 145, vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: const Text(
+            'REGISTER',
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        const SizedBox(height: 30),
+        RichText(
+          textAlign: TextAlign.center,
+          text: const TextSpan(
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+            children: [
+              TextSpan(text: 'By clicking continue, you agree to our '),
+              TextSpan(
+                text: 'Terms of Service',
+                style: TextStyle(color: Colors.black),
+              ),
+              TextSpan(text: ' and '),
+              TextSpan(
+                text: 'Privacy Policy',
+                style: TextStyle(color: Colors.black),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

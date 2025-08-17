@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:personal_application/DiaryPage/Diary.dart';
 import 'package:personal_application/DiaryPage/DiaryNote.dart';
+import 'package:personal_application/Weather/weatherScreen.dart';
 
 class Navigation extends StatefulWidget {
   static const String id = 'Navigation';
@@ -16,9 +17,7 @@ class _Navigation extends State<Navigation> {
 
   static const List<Widget> pages = <Widget>[
     Diary(),
-    Center(
-      child: Text('Weather Screen', style: TextStyle(color: Colors.white)),
-    ),
+    Weatherscreen(),
     Center(
       child: Text('Reminder Screen', style: TextStyle(color: Colors.white)),
     ),
@@ -82,7 +81,7 @@ class _Navigation extends State<Navigation> {
               padding: const EdgeInsets.only(bottom: 100),
               child: FloatingActionButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, Diarynote.id);
+                  Navigator.pushReplacementNamed(context, Diarynote.id);
                 },
                 backgroundColor: Color(0xFF4E2FB8),
                 shape: CircleBorder(),
