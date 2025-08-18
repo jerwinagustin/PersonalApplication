@@ -385,7 +385,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const Spacer(),
               Container(
-                height: MediaQuery.of(context).size.height * 0.7,
+                height: MediaQuery.of(context).size.height * 0.78,
                 child: ClipRRect(
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(37),
