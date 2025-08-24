@@ -57,12 +57,10 @@ class Weatherservice {
     }
   }
 
-  // Process the forecast data to get daily summaries
   List<ForecastDay> _processForecastData(Map<String, dynamic> data) {
     final List<dynamic> forecastList = data['list'];
     final Map<String, List<dynamic>> dailyData = {};
 
-    // Group forecast data by day
     for (var forecast in forecastList) {
       final DateTime date = DateTime.fromMillisecondsSinceEpoch(
         forecast['dt'] * 1000,
@@ -76,7 +74,6 @@ class Weatherservice {
       dailyData[dayKey]!.add(forecast);
     }
 
-    // Convert to ForecastDay objects (limit to 7 days)
     final List<ForecastDay> forecastDays = [];
     final sortedKeys = dailyData.keys.toList()..sort();
 
