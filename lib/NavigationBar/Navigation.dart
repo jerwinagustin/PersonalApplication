@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:personal_application/DiaryPage/Diary.dart';
 import 'package:personal_application/DiaryPage/DiaryNote.dart';
+import 'package:personal_application/Reminder/ReminderScreen.dart';
 import 'package:personal_application/Weather/weatherScreen.dart';
 
 class Navigation extends StatefulWidget {
@@ -18,9 +19,7 @@ class _Navigation extends State<Navigation> {
   static const List<Widget> pages = <Widget>[
     Diary(),
     Weatherscreen(),
-    Center(
-      child: Text('Reminder Screen', style: TextStyle(color: Colors.white)),
-    ),
+    Reminderscreen(),
   ];
 
   void NavTap(int index) {

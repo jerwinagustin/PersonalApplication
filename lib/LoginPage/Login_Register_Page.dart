@@ -17,13 +17,17 @@ class AuthSwitcher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final switcherWidth = (screenWidth * 0.85).clamp(300.0, 400.0);
+    final switcherHeight = screenWidth * 0.18;
+
     return Container(
-      width: 350,
-      height: 80,
-      padding: const EdgeInsets.all(4),
+      width: switcherWidth,
+      height: switcherHeight.clamp(70.0, 90.0),
+      padding: EdgeInsets.all(screenWidth * 0.01),
       decoration: BoxDecoration(
         color: Colors.grey.shade300,
-        borderRadius: BorderRadius.circular(36),
+        borderRadius: BorderRadius.circular(switcherHeight / 2),
       ),
       child: Stack(
         children: [
@@ -32,12 +36,12 @@ class AuthSwitcher extends StatelessWidget {
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
             child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              width: 160,
-              height: 62,
+              margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.01),
+              width: switcherWidth / 2 - (screenWidth * 0.02),
+              height: switcherHeight.clamp(70.0, 90.0) - (screenWidth * 0.02),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(32),
+                borderRadius: BorderRadius.circular(switcherHeight / 2),
               ),
             ),
           ),
@@ -46,10 +50,14 @@ class AuthSwitcher extends StatelessWidget {
               Expanded(
                 child: GestureDetector(
                   onTap: () => onToggle(true),
-                  child: const Center(
+                  child: Center(
                     child: Text(
                       'Login',
-                      style: TextStyle(fontWeight: FontWeight.w400),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: (screenWidth * 0.04).clamp(14.0, 18.0),
+                        color: isLogin ? Colors.black : Color(0xFF747474),
+                      ),
                     ),
                   ),
                 ),
@@ -57,10 +65,14 @@ class AuthSwitcher extends StatelessWidget {
               Expanded(
                 child: GestureDetector(
                   onTap: () => onToggle(false),
-                  child: const Center(
+                  child: Center(
                     child: Text(
                       'Register',
-                      style: TextStyle(fontWeight: FontWeight.w400),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: (screenWidth * 0.04).clamp(14.0, 18.0),
+                        color: isLogin ? Color(0xFF747474) : Colors.black,
+                      ),
                     ),
                   ),
                 ),
@@ -86,23 +98,28 @@ class _PasswordFieldState extends State<PasswordField> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return TextField(
       controller: widget.controller,
       obscureText: _obscureText,
       decoration: InputDecoration(
         labelText: 'Password',
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 20,
-          horizontal: 14,
+        labelStyle: TextStyle(fontSize: (screenWidth * 0.04).clamp(14.0, 16.0)),
+        contentPadding: EdgeInsets.symmetric(
+          vertical: screenWidth * 0.05,
+          horizontal: screenWidth * 0.04,
         ),
-        hintStyle: const TextStyle(
+        hintStyle: TextStyle(
           fontFamily: "Inter",
-          fontSize: 10,
-          color: Color(0xFF818181),
+          fontSize: (screenWidth * 0.025).clamp(10.0, 14.0),
+          color: const Color(0xFF818181),
         ),
         filled: true,
         fillColor: Colors.white,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(screenWidth * 0.03),
+        ),
         suffixIcon: IconButton(
           icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
           onPressed: () {
@@ -128,18 +145,30 @@ class _RememberMeState extends State<RememberMe> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Checkbox(
-          value: isChecked,
-          onChanged: (value) {
-            setState(() {
-              isChecked = value!;
-            });
-          },
-          side: const BorderSide(color: Colors.white, width: 2),
+        Transform.scale(
+          scale: (screenWidth * 0.003).clamp(0.8, 1.2),
+          child: Checkbox(
+            value: isChecked,
+            onChanged: (value) {
+              setState(() {
+                isChecked = value!;
+              });
+            },
+            side: const BorderSide(color: Colors.white, width: 2),
+          ),
         ),
-        const Text('Remember Me', style: TextStyle(color: Colors.white)),
+        Text(
+          'Remember Me',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: (screenWidth * 0.035).clamp(12.0, 16.0),
+          ),
+        ),
       ],
     );
   }
@@ -147,14 +176,17 @@ class _RememberMeState extends State<RememberMe> {
 
 class ForgotPassword extends StatelessWidget {
   const ForgotPassword({super.key});
+
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return GestureDetector(
-      child: const Text(
+      child: Text(
         'Forgot Password?',
         style: TextStyle(
           fontFamily: 'Inter',
-          fontSize: 11,
+          fontSize: (screenWidth * 0.03).clamp(11.0, 14.0),
           fontWeight: FontWeight.w500,
           color: Colors.white,
         ),
@@ -180,18 +212,23 @@ class _RegisterPasswordFieldState extends State<RegisterPasswordField> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return TextField(
       controller: widget.controller,
       obscureText: _obscureText,
       decoration: InputDecoration(
         labelText: 'Password',
+        labelStyle: TextStyle(fontSize: (screenWidth * 0.04).clamp(14.0, 16.0)),
         filled: true,
         fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 14,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.05,
+          vertical: screenWidth * 0.035,
         ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(screenWidth * 0.03),
+        ),
         suffixIcon: IconButton(
           icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
           onPressed: () {
@@ -219,18 +256,23 @@ class _ConfirmPasswordState extends State<ConfirmPassword> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return TextField(
       controller: widget.controller,
       obscureText: _obscureText,
       decoration: InputDecoration(
         labelText: 'Confirm Password',
+        labelStyle: TextStyle(fontSize: (screenWidth * 0.04).clamp(14.0, 16.0)),
         filled: true,
         fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 14,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.05,
+          vertical: screenWidth * 0.035,
         ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(screenWidth * 0.03),
+        ),
         suffixIcon: IconButton(
           icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
           onPressed: () {
@@ -352,6 +394,11 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final screenWidth = screenSize.width;
+    final screenHeight = screenSize.height;
+    final isSmallScreen = screenHeight < 700;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -371,35 +418,41 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               SafeArea(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 110),
+                  padding: EdgeInsets.only(
+                    top: isSmallScreen
+                        ? screenHeight * 0.08
+                        : screenHeight * 0.12,
+                  ),
                   child: Text(
                     isLogin ? 'WELCOME BACK!' : 'JOIN IN!',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Inter',
-                      fontSize: 24,
+                      fontSize: (screenWidth * 0.06).clamp(20.0, 28.0),
                     ),
                   ),
                 ),
               ),
               const Spacer(),
               Container(
-                height: MediaQuery.of(context).size.height * 0.78,
+                height: isSmallScreen
+                    ? screenHeight * 0.72
+                    : screenHeight * 0.78,
                 child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(37),
-                    topRight: Radius.circular(37),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(screenWidth * 0.1),
+                    topRight: Radius.circular(screenWidth * 0.1),
                   ),
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                     child: Container(
-                      width: MediaQuery.of(context).size.width,
+                      width: screenWidth,
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.15),
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(37),
-                          topRight: Radius.circular(37),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(screenWidth * 0.1),
+                          topRight: Radius.circular(screenWidth * 0.1),
                         ),
                         border: Border.all(
                           color: Colors.white.withOpacity(0.3),
@@ -407,9 +460,9 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       child: SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 24,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: screenWidth * 0.06,
+                          vertical: screenWidth * 0.06,
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -418,33 +471,39 @@ class _LoginPageState extends State<LoginPage> {
                               isLogin: isLogin,
                               onToggle: toggleAuth,
                             ),
-                            const SizedBox(height: 12),
+                            SizedBox(height: screenHeight * 0.015),
                             Text(
                               isLogin
                                   ? 'Go ahead and Sign in your account'
                                   : 'Go ahead and register your account',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontFamily: 'Inter',
-                                fontSize: 21,
+                                fontSize: (screenWidth * 0.052).clamp(
+                                  18.0,
+                                  24.0,
+                                ),
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
                               textAlign: TextAlign.center,
                             ),
-                            const SizedBox(height: 6),
+                            SizedBox(height: screenHeight * 0.008),
                             Text(
                               isLogin
                                   ? 'Sign in to enjoy the best experience'
                                   : 'Register to enjoy the best experience',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontFamily: 'Inter',
                                 fontWeight: FontWeight.w400,
-                                color: Color(0xFFBDBDBD),
-                                fontSize: 15,
+                                color: const Color(0xFFBDBDBD),
+                                fontSize: (screenWidth * 0.038).clamp(
+                                  13.0,
+                                  17.0,
+                                ),
                               ),
                               textAlign: TextAlign.center,
                             ),
-                            const SizedBox(height: 30),
+                            SizedBox(height: screenHeight * 0.035),
                             AnimatedSwitcher(
                               duration: const Duration(milliseconds: 300),
                               child: isLogin
@@ -466,6 +525,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildLoginForm() {
+    final screenSize = MediaQuery.of(context).size;
+    final screenWidth = screenSize.width;
+    final screenHeight = screenSize.height;
+
     return Column(
       key: const ValueKey('login'),
       children: [
@@ -473,30 +536,39 @@ class _LoginPageState extends State<LoginPage> {
           controller: emailController,
           decoration: InputDecoration(
             labelText: 'Email Address',
+            labelStyle: TextStyle(
+              fontSize: (screenWidth * 0.04).clamp(14.0, 16.0),
+            ),
             filled: true,
             fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 20,
-              horizontal: 14,
+            contentPadding: EdgeInsets.symmetric(
+              vertical: screenWidth * 0.05,
+              horizontal: screenWidth * 0.04,
             ),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(screenWidth * 0.03),
+            ),
           ),
         ),
-
-        const SizedBox(height: 20),
+        SizedBox(height: screenHeight * 0.025),
         PasswordField(controller: passwordController),
-        const SizedBox(height: 10),
-
+        SizedBox(height: screenHeight * 0.012),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: const [RememberMe(), ForgotPassword()],
         ),
-
-        const SizedBox(height: 10),
+        SizedBox(height: screenHeight * 0.012),
         if (errorMessage.isNotEmpty)
-          Text(errorMessage, style: const TextStyle(color: Colors.redAccent)),
-        const SizedBox(height: 10),
-
+          Padding(
+            padding: EdgeInsets.only(bottom: screenHeight * 0.012),
+            child: Text(
+              errorMessage,
+              style: TextStyle(
+                color: Colors.redAccent,
+                fontSize: (screenWidth * 0.035).clamp(12.0, 16.0),
+              ),
+            ),
+          ),
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
@@ -504,36 +576,36 @@ class _LoginPageState extends State<LoginPage> {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF3B1B9C),
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: EdgeInsets.symmetric(vertical: screenWidth * 0.04),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(screenWidth * 0.03),
               ),
             ),
-            child: const Text(
+            child: Text(
               'CONTINUE',
               style: TextStyle(
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w500,
-                fontSize: 13,
+                fontSize: (screenWidth * 0.035).clamp(13.0, 16.0),
               ),
             ),
           ),
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: screenHeight * 0.025),
         Row(
           children: [
             const Expanded(
               child: Divider(color: Color(0xFFE6E6E6), thickness: 1),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
               child: Text(
                 'Or',
                 style: TextStyle(
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w400,
-                  fontSize: 14,
-                  color: Color(0xFFBDBDBD),
+                  fontSize: (screenWidth * 0.035).clamp(14.0, 16.0),
+                  color: const Color(0xFFBDBDBD),
                 ),
               ),
             ),
@@ -542,7 +614,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ],
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: screenHeight * 0.025),
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
@@ -550,39 +622,39 @@ class _LoginPageState extends State<LoginPage> {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
               foregroundColor: Colors.black,
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: EdgeInsets.symmetric(vertical: screenWidth * 0.04),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(screenWidth * 0.03),
               ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('images/Google.png', height: 24),
-                const SizedBox(width: 12),
-                const Text(
+                Image.asset('images/Google.png', height: screenWidth * 0.06),
+                SizedBox(width: screenWidth * 0.03),
+                Text(
                   'Continue with Google',
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w500,
-                    fontSize: 14,
+                    fontSize: (screenWidth * 0.035).clamp(14.0, 16.0),
                   ),
                 ),
               ],
             ),
           ),
         ),
-        const SizedBox(height: 30),
+        SizedBox(height: screenHeight * 0.04),
         RichText(
           textAlign: TextAlign.center,
-          text: const TextSpan(
+          text: TextSpan(
             style: TextStyle(
               fontFamily: 'Inter',
-              fontSize: 12,
+              fontSize: (screenWidth * 0.03).clamp(12.0, 14.0),
               fontWeight: FontWeight.w500,
               color: Colors.white,
             ),
-            children: [
+            children: const [
               TextSpan(text: 'By clicking continue, you agree to our '),
               TextSpan(
                 text: 'Terms of Service',
@@ -601,6 +673,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildRegisterForm() {
+    final screenSize = MediaQuery.of(context).size;
+    final screenWidth = screenSize.width;
+    final screenHeight = screenSize.height;
+
     return Column(
       key: const ValueKey('register'),
       children: [
@@ -608,41 +684,51 @@ class _LoginPageState extends State<LoginPage> {
           controller: usernameController,
           decoration: InputDecoration(
             labelText: 'Username',
+            labelStyle: TextStyle(
+              fontSize: (screenWidth * 0.04).clamp(14.0, 16.0),
+            ),
             filled: true,
             fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 14,
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.05,
+              vertical: screenWidth * 0.035,
             ),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(screenWidth * 0.03),
+            ),
           ),
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: screenHeight * 0.025),
         TextField(
           controller: emailController,
           decoration: InputDecoration(
             labelText: 'Email Address',
+            labelStyle: TextStyle(
+              fontSize: (screenWidth * 0.04).clamp(14.0, 16.0),
+            ),
             filled: true,
             fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 14,
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.05,
+              vertical: screenWidth * 0.035,
             ),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(screenWidth * 0.03),
+            ),
           ),
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: screenHeight * 0.025),
         RegisterPasswordField(controller: passwordController),
-        const SizedBox(height: 20),
+        SizedBox(height: screenHeight * 0.025),
         ConfirmPassword(controller: confirmPasswordController),
         if (passwordMessage != null)
           Padding(
-            padding: const EdgeInsets.only(top: 8),
+            padding: EdgeInsets.only(top: screenHeight * 0.01),
             child: Text(
               passwordMessage!,
               style: TextStyle(
                 fontFamily: 'Inter',
-                fontSize: 12,
+                fontSize: (screenWidth * 0.03).clamp(12.0, 14.0),
                 fontWeight: FontWeight.w500,
                 color: passwordMatch == true ? Colors.green : Colors.red,
               ),
@@ -650,44 +736,50 @@ class _LoginPageState extends State<LoginPage> {
           ),
         if (errorMessage.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.only(top: 8),
+            padding: EdgeInsets.only(top: screenHeight * 0.01),
             child: Text(
               errorMessage,
-              style: const TextStyle(color: Colors.redAccent),
+              style: TextStyle(
+                color: Colors.redAccent,
+                fontSize: (screenWidth * 0.035).clamp(12.0, 16.0),
+              ),
             ),
           ),
-        const SizedBox(height: 10),
-        ElevatedButton(
-          onPressed: register,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF3B1B9C),
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 145, vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+        SizedBox(height: screenHeight * 0.012),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: register,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF3B1B9C),
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(vertical: screenWidth * 0.04),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(screenWidth * 0.03),
+              ),
             ),
-          ),
-          child: const Text(
-            'REGISTER',
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-              color: Colors.white,
+            child: Text(
+              'REGISTER',
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w500,
+                fontSize: (screenWidth * 0.035).clamp(14.0, 16.0),
+                color: Colors.white,
+              ),
             ),
           ),
         ),
-        const SizedBox(height: 30),
+        SizedBox(height: screenHeight * 0.04),
         RichText(
           textAlign: TextAlign.center,
-          text: const TextSpan(
+          text: TextSpan(
             style: TextStyle(
               fontFamily: 'Inter',
-              fontSize: 12,
+              fontSize: (screenWidth * 0.03).clamp(12.0, 14.0),
               fontWeight: FontWeight.w500,
               color: Colors.white,
             ),
-            children: [
+            children: const [
               TextSpan(text: 'By clicking continue, you agree to our '),
               TextSpan(
                 text: 'Terms of Service',

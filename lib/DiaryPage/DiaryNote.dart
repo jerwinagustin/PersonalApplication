@@ -323,44 +323,45 @@ class _Diarynote extends State<Diarynote> {
 
                                   SizedBox(width: 4),
 
-                                  SizedBox(
-                                    height: 35,
-                                    width: 160,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            Color(0xFF9900FF),
-                                            Color(0xFF666666),
-                                          ],
-                                        ),
-                                      ),
-                                      padding: EdgeInsets.all(1.5),
+                                  Expanded(
+                                    child: SizedBox(
+                                      height: 35,
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          color: Color(0xFF1F192F),
-                                        ),
-                                        alignment: Alignment.center,
-                                        child: TextField(
-                                          controller: genre,
-                                          style: TextStyle(
-                                            fontFamily: 'Inter',
-                                            fontSize: 12,
-                                            color: Colors.white,
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              Color(0xFF9900FF),
+                                              Color(0xFF666666),
+                                            ],
                                           ),
-                                          decoration: InputDecoration(
-                                            isDense: true,
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                  horizontal: 9,
-                                                  vertical: 6,
-                                                ),
-                                            border: InputBorder.none,
-                                            hintText: 'Enter Your Genre...',
-                                            hintStyle: TextStyle(
+                                        ),
+                                        padding: EdgeInsets.all(1.5),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFF1F192F),
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: TextField(
+                                            controller: genre,
+                                            style: TextStyle(
                                               fontFamily: 'Inter',
                                               fontSize: 12,
-                                              color: Color(0xFFE0E0E0),
+                                              color: Colors.white,
+                                            ),
+                                            decoration: InputDecoration(
+                                              isDense: true,
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                    horizontal: 9,
+                                                    vertical: 6,
+                                                  ),
+                                              border: InputBorder.none,
+                                              hintText: 'Enter Your Genre...',
+                                              hintStyle: TextStyle(
+                                                fontFamily: 'Inter',
+                                                fontSize: 12,
+                                                color: Color(0xFFE0E0E0),
+                                              ),
                                             ),
                                           ),
                                         ),
