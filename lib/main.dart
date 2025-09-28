@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:personal_application/LoginPage/forgotPassword.dart';
 import 'package:personal_application/NavigationBar/Navigation.dart';
 import 'package:personal_application/Reminder/ReminderScreen.dart';
+import 'package:personal_application/Reminder/reminderTime.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -33,7 +34,8 @@ class MyApp extends StatelessWidget {
         Navigation.id: (context) => Navigation(),
         Diarynote.id: (context) => Diarynote(),
         UpdateDelete.id: (context) => UpdateDelete(),
-        Reminderscreen.id: (context) => Reminderscreen(),
+        ReminderScreen.id: (context) => ReminderScreen(),
+        Remindertime.id: (context) => Remindertime(),
       },
       debugShowCheckedModeBanner: false,
     );

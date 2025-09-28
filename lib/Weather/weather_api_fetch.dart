@@ -16,7 +16,10 @@ class WeatherApiFetch {
   });
 
   factory WeatherApiFetch.fromJson(Map<String, dynamic> json) {
-    final windMs = (json['wind']?['speed'] ?? 0).toDouble();
+    final windSpeed = json['wind']?['speed'] ?? 0;
+    final windMs = (windSpeed is int)
+        ? windSpeed.toDouble()
+        : windSpeed.toDouble();
     final windKmh = windMs * 3.6;
 
     int chanceOfRain = 0;
@@ -24,11 +27,20 @@ class WeatherApiFetch {
     if (json['rain'] != null) {
       chanceOfRain = 100;
     }
+
+    final temp = json['main']['temp'];
+    final temperature = (temp is int) ? temp.toDouble() : temp.toDouble();
+
+    final humidity = json['main']['humidity'];
+    final humidityValue = (humidity is int)
+        ? humidity.toDouble()
+        : humidity.toDouble();
+
     return WeatherApiFetch(
       locationName: json['name'],
-      temperature: json['main']['temp'].toDouble(),
+      temperature: temperature,
       Wind: windKmh,
-      Humidity: json['main']['humidity'].toInt(),
+      Humidity: humidityValue,
       chance_of_rain: chanceOfRain,
       mainCondition: json['weather'][0]['main'],
     );

@@ -131,201 +131,161 @@ class _Diarynote extends State<Diarynote> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Container(color: const Color(0xFF170B3F)),
-            Opacity(
-              opacity: 0.1,
-              child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('images/Phone.jpg'),
-                    fit: BoxFit.cover,
+    return WillPopScope(
+      onWillPop: () async {
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: Stack(
+            children: [
+              Container(color: const Color(0xFF170B3F)),
+              Opacity(
+                opacity: 0.1,
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('images/Phone.jpg'),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
-            ),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Color(0xFF9900FF),
-                          Color(0xFF413243),
-                          Color(0xFFFF00AA),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(36),
-                    ),
-                    padding: EdgeInsets.all(2),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(36),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 493,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Color(0xFF03000F),
-                              Color(0xFF050017),
-                              Color(0xFF170B3F),
-                            ],
-                          ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color(0xFF9900FF),
+                            Color(0xFF413243),
+                            Color(0xFFFF00AA),
+                          ],
                         ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 36,
-                            vertical: 31,
+                        borderRadius: BorderRadius.circular(36),
+                      ),
+                      padding: EdgeInsets.all(2),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(36),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 493,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Color(0xFF03000F),
+                                Color(0xFF050017),
+                                Color(0xFF170B3F),
+                              ],
+                            ),
                           ),
-                          child: Column(
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.pushReplacementNamed(
-                                        context,
-                                        Navigation.id,
-                                      );
-                                    },
-                                    child: Icon(
-                                      Icons.arrow_back,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  SizedBox(width: 7),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Add New Note',
-                                          style: TextStyle(
-                                            fontFamily: 'Inter',
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              SizedBox(height: 16),
-
-                              SizedBox(
-                                height: 35,
-
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Color(0xFF9900FF),
-                                        Color(0xFF666666),
-                                      ],
-                                    ),
-                                  ),
-                                  padding: EdgeInsets.all(1.5),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFF1F192F),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: TextField(
-                                      controller: title,
-                                      style: TextStyle(
-                                        fontFamily: 'Inter',
-                                        fontSize: 12,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 36,
+                              vertical: 31,
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.pushReplacementNamed(
+                                          context,
+                                          Navigation.id,
+                                        );
+                                      },
+                                      child: Icon(
+                                        Icons.arrow_back,
                                         color: Colors.white,
                                       ),
-                                      decoration: InputDecoration(
-                                        isDense: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 9,
-                                          vertical: 6,
-                                        ),
-                                        border: InputBorder.none,
-                                        hintText: 'Enter Your Title...',
-                                        hintStyle: TextStyle(
+                                    ),
+                                    SizedBox(width: 7),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Add New Note',
+                                            style: TextStyle(
+                                              fontFamily: 'Inter',
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                SizedBox(height: 16),
+
+                                SizedBox(
+                                  height: 35,
+
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Color(0xFF9900FF),
+                                          Color(0xFF666666),
+                                        ],
+                                      ),
+                                    ),
+                                    padding: EdgeInsets.all(1.5),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFF1F192F),
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: TextField(
+                                        controller: title,
+                                        style: TextStyle(
                                           fontFamily: 'Inter',
                                           fontSize: 12,
-                                          color: Color(0xFFE0E0E0),
+                                          color: Colors.white,
+                                        ),
+                                        decoration: InputDecoration(
+                                          isDense: true,
+                                          contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 9,
+                                            vertical: 6,
+                                          ),
+                                          border: InputBorder.none,
+                                          hintText: 'Enter Your Title...',
+                                          hintStyle: TextStyle(
+                                            fontFamily: 'Inter',
+                                            fontSize: 12,
+                                            color: Color(0xFFE0E0E0),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 5),
+                                SizedBox(height: 5),
 
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    height: 35,
-                                    width: 140,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            Color(0xFF9900FF),
-                                            Color(0xFF666666),
-                                          ],
-                                        ),
-                                      ),
-
-                                      padding: EdgeInsets.all(1.5),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFF1F192F),
-                                        ),
-                                        alignment: Alignment.center,
-                                        child: TextField(
-                                          controller: time,
-                                          readOnly: true,
-                                          enabled: false,
-                                          style: TextStyle(
-                                            fontFamily: 'Inter',
-                                            fontSize: 12,
-                                            color: Color(0xFFC3C3C3),
-                                          ),
-                                          decoration: InputDecoration(
-                                            prefixIcon: Icon(
-                                              Icons.timer,
-                                              size: 12,
-                                              color: Color(0xFFC3C3C3),
-                                            ),
-                                            isDense: true,
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                  horizontal: 9,
-                                                  vertical: 6,
-                                                ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-
-                                  SizedBox(width: 4),
-
-                                  Expanded(
-                                    child: SizedBox(
+                                Row(
+                                  children: [
+                                    SizedBox(
                                       height: 35,
+                                      width: 140,
                                       child: Container(
                                         decoration: BoxDecoration(
                                           gradient: LinearGradient(
@@ -335,6 +295,7 @@ class _Diarynote extends State<Diarynote> {
                                             ],
                                           ),
                                         ),
+
                                         padding: EdgeInsets.all(1.5),
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -342,132 +303,182 @@ class _Diarynote extends State<Diarynote> {
                                           ),
                                           alignment: Alignment.center,
                                           child: TextField(
-                                            controller: genre,
+                                            controller: time,
+                                            readOnly: true,
+                                            enabled: false,
                                             style: TextStyle(
                                               fontFamily: 'Inter',
                                               fontSize: 12,
-                                              color: Colors.white,
+                                              color: Color(0xFFC3C3C3),
                                             ),
                                             decoration: InputDecoration(
+                                              prefixIcon: Icon(
+                                                Icons.timer,
+                                                size: 12,
+                                                color: Color(0xFFC3C3C3),
+                                              ),
                                               isDense: true,
                                               contentPadding:
                                                   EdgeInsets.symmetric(
                                                     horizontal: 9,
                                                     vertical: 6,
                                                   ),
-                                              border: InputBorder.none,
-                                              hintText: 'Enter Your Genre...',
-                                              hintStyle: TextStyle(
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                    SizedBox(width: 4),
+
+                                    Expanded(
+                                      child: SizedBox(
+                                        height: 35,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Color(0xFF9900FF),
+                                                Color(0xFF666666),
+                                              ],
+                                            ),
+                                          ),
+                                          padding: EdgeInsets.all(1.5),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFF1F192F),
+                                            ),
+                                            alignment: Alignment.center,
+                                            child: TextField(
+                                              controller: genre,
+                                              style: TextStyle(
                                                 fontFamily: 'Inter',
                                                 fontSize: 12,
-                                                color: Color(0xFFE0E0E0),
+                                                color: Colors.white,
+                                              ),
+                                              decoration: InputDecoration(
+                                                isDense: true,
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                      horizontal: 9,
+                                                      vertical: 6,
+                                                    ),
+                                                border: InputBorder.none,
+                                                hintText: 'Enter Your Genre...',
+                                                hintStyle: TextStyle(
+                                                  fontFamily: 'Inter',
+                                                  fontSize: 12,
+                                                  color: Color(0xFFE0E0E0),
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
+                                  ],
+                                ),
 
-                              SizedBox(height: 15),
+                                SizedBox(height: 15),
 
-                              SizedBox(
-                                height: 237,
+                                SizedBox(
+                                  height: 237,
 
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Color(0xFF9900FF),
-                                        Color(0xFF666666),
-                                      ],
-                                    ),
-                                  ),
-                                  padding: EdgeInsets.all(1.5),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      color: Color(0xFF1F192F),
-                                    ),
-
-                                    child: TextField(
-                                      controller: textNote,
-                                      maxLines: null,
-                                      expands: true,
-                                      style: TextStyle(
-                                        fontFamily: 'Inter',
-                                        fontSize: 12,
-                                        color: Colors.white,
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Color(0xFF9900FF),
+                                          Color(0xFF666666),
+                                        ],
                                       ),
-                                      decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 9,
-                                          vertical: 6,
-                                        ),
-                                        border: InputBorder.none,
-                                        hintText: 'Enter Your Note...',
-                                        hintStyle: TextStyle(
+                                    ),
+                                    padding: EdgeInsets.all(1.5),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFF1F192F),
+                                      ),
+
+                                      child: TextField(
+                                        controller: textNote,
+                                        maxLines: null,
+                                        expands: true,
+                                        style: TextStyle(
                                           fontFamily: 'Inter',
                                           fontSize: 12,
-                                          color: Color(0xFFE0E0E0),
+                                          color: Colors.white,
+                                        ),
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 9,
+                                            vertical: 6,
+                                          ),
+                                          border: InputBorder.none,
+                                          hintText: 'Enter Your Note...',
+                                          hintStyle: TextStyle(
+                                            fontFamily: 'Inter',
+                                            fontSize: 12,
+                                            color: Color(0xFFE0E0E0),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
 
-                              SizedBox(height: 15),
+                                SizedBox(height: 15),
 
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: isLoading ? null : _saveNote,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFF3B1B9C),
-                                    padding: EdgeInsets.symmetric(vertical: 12),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: isLoading ? null : _saveNote,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Color(0xFF3B1B9C),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 12,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
                                     ),
+                                    child: isLoading
+                                        ? SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                              strokeWidth: 2,
+                                            ),
+                                          )
+                                        : Text(
+                                            'Save Note',
+                                            style: TextStyle(
+                                              fontFamily: 'Inter',
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                   ),
-                                  child: isLoading
-                                      ? SizedBox(
-                                          height: 20,
-                                          width: 20,
-                                          child: CircularProgressIndicator(
-                                            color: Colors.white,
-                                            strokeWidth: 2,
-                                          ),
-                                        )
-                                      : Text(
-                                          'Save Note',
-                                          style: TextStyle(
-                                            fontFamily: 'Inter',
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.white,
-                                          ),
-                                        ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            if (isLoading)
-              Container(
-                color: Colors.black54,
-                child: Center(
-                  child: CircularProgressIndicator(color: Color(0xFF3B1B9C)),
+                  ],
                 ),
               ),
-          ],
+              if (isLoading)
+                Container(
+                  color: Colors.black54,
+                  child: Center(
+                    child: CircularProgressIndicator(color: Color(0xFF3B1B9C)),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

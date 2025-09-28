@@ -3,6 +3,11 @@ allprojects {
         google()
         mavenCentral()
     }
+    
+    // Suppress Java 8 warnings and deprecation warnings from dependencies
+    tasks.withType<JavaCompile> {
+        options.compilerArgs.addAll(listOf("-Xlint:-options", "-Xlint:-deprecation"))
+    }
 }
 
 val newBuildDir: Directory = rootProject.layout.buildDirectory.dir("../../build").get()

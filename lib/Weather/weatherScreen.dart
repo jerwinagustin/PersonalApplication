@@ -19,12 +19,13 @@ class _MyWidgetState extends State<Weatherscreen> {
 
   _fetchWeather() async {
     try {
+      print('Starting weather fetch...'); // Debug print
       String locationName = await _weatherService.getCurrentLocation();
-      print('Location: $locationName'); // Debug print
+      print('Location obtained: $locationName'); // Debug print
 
       final weather = await _weatherService.getWeather(locationName);
       print(
-        'Weather data: ${weather.locationName}, ${weather.temperature}°C',
+        'Weather data received: ${weather.locationName}, ${weather.temperature}°C',
       ); // Debug print
 
       setState(() {
@@ -32,11 +33,20 @@ class _MyWidgetState extends State<Weatherscreen> {
       });
     } catch (e) {
       print('Error fetching weather: $e');
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to fetch weather: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
   String getWeatherAnimation(String? mainCondition) {
-    if (mainCondition == null) return 'assets/weather_image/sunny.json';
+    if (mainCondition == null) return 'weather_image/sunny.json';
 
     switch (mainCondition.toLowerCase()) {
       case 'clouds':
@@ -63,15 +73,24 @@ class _MyWidgetState extends State<Weatherscreen> {
 
   _fetch7DayForecast() async {
     try {
+      print('Starting forecast fetch...'); // Debug print
       String locationName = await _weatherService.getCurrentLocation();
       final forecast = await _weatherService.get7DayForecast(locationName);
-      print('Forecast data: ${forecast.length} days'); // Debug print
+      print('Forecast data received: ${forecast.length} days'); // Debug print
 
       setState(() {
         _forecast = forecast;
       });
     } catch (e) {
       print('Error fetching forecast: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to fetch forecast: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -363,7 +382,7 @@ class _MyWidgetState extends State<Weatherscreen> {
                               ],
                             ),
                           ),
-                          child: Padding(
+                          child: Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: 34,
                               vertical: 18,
@@ -371,8 +390,6 @@ class _MyWidgetState extends State<Weatherscreen> {
                             child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
                                 children: List.generate(7, (index) {
                                   final day = DateFormat('EEE').format(
                                     DateTime.now().add(Duration(days: index)),
@@ -384,8 +401,9 @@ class _MyWidgetState extends State<Weatherscreen> {
                                       ? _forecast![index].toMap()
                                       : null;
 
-                                  return Padding(
-                                    padding: EdgeInsets.only(right: 33),
+                                  return Container(
+                                    width: 60,
+                                    margin: EdgeInsets.only(right: 8),
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
