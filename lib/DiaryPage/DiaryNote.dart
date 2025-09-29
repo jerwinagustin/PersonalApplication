@@ -233,7 +233,6 @@ class _Diarynote extends State<Diarynote> {
                                     ),
                                   ],
                                 ),
-
                                 SizedBox(height: 16),
 
                                 SizedBox(
