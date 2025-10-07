@@ -19,14 +19,14 @@ class _MyWidgetState extends State<Weatherscreen> {
 
   _fetchWeather() async {
     try {
-      print('Starting weather fetch...'); // Debug print
+      print('Starting weather fetch...');
       String locationName = await _weatherService.getCurrentLocation();
-      print('Location obtained: $locationName'); // Debug print
+      print('Location obtained: $locationName');
 
       final weather = await _weatherService.getWeather(locationName);
       print(
         'Weather data received: ${weather.locationName}, ${weather.temperature}°C',
-      ); // Debug print
+      );
 
       setState(() {
         _weather = weather;
@@ -73,10 +73,10 @@ class _MyWidgetState extends State<Weatherscreen> {
 
   _fetch7DayForecast() async {
     try {
-      print('Starting forecast fetch...'); // Debug print
+      print('Starting forecast fetch...');
       String locationName = await _weatherService.getCurrentLocation();
       final forecast = await _weatherService.get7DayForecast(locationName);
-      print('Forecast data received: ${forecast.length} days'); // Debug print
+      print('Forecast data received: ${forecast.length} days');
 
       setState(() {
         _forecast = forecast;
@@ -105,371 +105,357 @@ class _MyWidgetState extends State<Weatherscreen> {
   Widget build(BuildContext context) {
     final now = DateTime.now();
     final Format = DateFormat('EE, MMM d').format(now);
-    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: Color(0xFF06011D),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
-        child: SizedBox(
-          height: size.height,
-          width: size.width,
-          child: Stack(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 41),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 41,
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0XFF9900FF),
+                      Color(0xFF413243),
+                      Color(0xFFFF00AA),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(36),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Color(0XFF9900FF),
-                            Color(0xFF413243),
-                            Color(0xFFFF00AA),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(36),
+                padding: EdgeInsets.all(2),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(36),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 493,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color(0xFF03000F),
+                          Color(0xFF050017),
+                          Color(0xFF170B3F),
+                        ],
                       ),
-                      padding: EdgeInsets.all(2),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(36),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 493,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Color(0xFF03000F),
-                                Color(0xFF050017),
-                                Color(0xFF170B3F),
-                              ],
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 21,
+                        vertical: 14,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: Text(
+                              _weather?.locationName ?? "Loading location...",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Inter',
+                                fontSize: 24,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 21,
-                              vertical: 14,
+
+                          Lottie.asset(
+                            getWeatherAnimation(_weather?.mainCondition),
+                            height: 200,
+                          ),
+
+                          Text(
+                            _weather != null
+                                ? '${_weather!.temperature.round()}°C'
+                                : "Loading...",
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              color: Colors.white,
+                              fontSize: 45,
+                              fontWeight: FontWeight.w500,
                             ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Center(
-                                  child: Text(
-                                    _weather?.locationName ??
-                                        "Loading location...",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'Inter',
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
+                          ),
 
-                                Lottie.asset(
-                                  getWeatherAnimation(_weather?.mainCondition),
-                                  height: 200,
-                                ),
+                          Text(
+                            _weather?.mainCondition ?? "",
+                            style: TextStyle(
+                              fontSize: 21,
+                              fontFamily: 'Inter',
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            Format,
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.normal,
+                              color: Color(0xFFBDBDBD),
+                              fontSize: 10,
+                            ),
+                          ),
 
-                                Text(
-                                  _weather != null
-                                      ? '${_weather!.temperature.round()}°C'
-                                      : "Loading...",
-                                  style: TextStyle(
-                                    fontFamily: 'Inter',
-                                    color: Colors.white,
-                                    fontSize: 45,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
+                          SizedBox(height: 21),
 
-                                Text(
-                                  _weather?.mainCondition ?? "",
-                                  style: TextStyle(
-                                    fontSize: 21,
-                                    fontFamily: 'Inter',
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                Text(
-                                  Format,
-                                  style: TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.normal,
-                                    color: Color(0xFFBDBDBD),
-                                    fontSize: 10,
-                                  ),
-                                ),
-
-                                SizedBox(height: 21),
-
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(
+                                child: Column(
                                   children: [
-                                    Expanded(
-                                      child: Column(
-                                        children: [
-                                          SizedBox(width: 50),
-                                          Icon(
-                                            Icons.av_timer,
-                                            size: 30,
-                                            color: Colors.white,
-                                          ),
-                                          Text(
-                                            _weather != null
-                                                ? '${_weather!.Wind.round()} km/h'
-                                                : 'Loading...',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'Inter',
-                                              fontSize: 11,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Wind',
-                                            style: TextStyle(
-                                              color: Color(0xFFBDBDBD),
-                                              fontFamily: 'Inter',
-                                              fontSize: 11,
-                                            ),
-                                          ),
-                                        ],
+                                    SizedBox(width: 50),
+                                    Icon(
+                                      Icons.av_timer,
+                                      size: 30,
+                                      color: Colors.white,
+                                    ),
+                                    Text(
+                                      _weather != null
+                                          ? '${_weather!.Wind.round()} km/h'
+                                          : 'Loading...',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'Inter',
+                                        fontSize: 11,
                                       ),
                                     ),
-                                    Container(
-                                      height: 60,
-                                      width: 1,
-                                      color: Color(0xFF2F187D),
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        children: [
-                                          Icon(
-                                            Symbols.humidity_high,
-                                            size: 30,
-                                            color: Colors.white,
-                                          ),
-                                          Text(
-                                            _weather != null
-                                                ? '${_weather!.Humidity.round()}%'
-                                                : 'Loading...',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'Inter',
-                                              fontSize: 11,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Humidity',
-                                            style: TextStyle(
-                                              color: Color(0xFFBDBDBD),
-                                              fontFamily: 'Inter',
-                                              fontSize: 11,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      height: 60,
-                                      width: 1,
-                                      color: Color(0xFF2F187D),
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        children: [
-                                          Icon(
-                                            Symbols.water_drop,
-                                            size: 30,
-                                            color: Colors.white,
-                                          ),
-                                          Text(
-                                            _weather != null
-                                                ? '${_weather!.chance_of_rain}%'
-                                                : 'Loading...',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'Inter',
-                                              fontSize: 11,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Chance of rain',
-                                            style: TextStyle(
-                                              color: Color(0xFFBDBDBD),
-                                              fontFamily: 'Inter',
-                                              fontSize: 11,
-                                            ),
-                                          ),
-                                        ],
+                                    Text(
+                                      'Wind',
+                                      style: TextStyle(
+                                        color: Color(0xFFBDBDBD),
+                                        fontFamily: 'Inter',
+                                        fontSize: 11,
                                       ),
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(height: 20),
-
-                    Row(
-                      children: [
-                        Text(
-                          'Today',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontFamily: 'Inter',
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Spacer(),
-                        Text(
-                          '7 days',
-                          style: TextStyle(
-                            color: Color(0xFFBDBDBD),
-                            fontFamily: 'Inter',
-                            fontSize: 11,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: 20),
-
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Color(0xFF9900FF),
-                            Color(0xFF413243),
-                            Color(0xFFFF00AA),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(36),
-                      ),
-                      padding: EdgeInsets.all(2),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(36),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 123,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Color(0xFF03000F),
-                                Color(0xFF050017),
-                                Color(0xFF170B3F),
-                              ],
-                            ),
-                          ),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 34,
-                              vertical: 18,
-                            ),
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: List.generate(7, (index) {
-                                  final day = DateFormat('EEE').format(
-                                    DateTime.now().add(Duration(days: index)),
-                                  );
-
-                                  final dayData =
-                                      _forecast != null &&
-                                          _forecast!.length > index
-                                      ? _forecast![index].toMap()
-                                      : null;
-
-                                  return Container(
-                                    width: 60,
-                                    margin: EdgeInsets.only(right: 8),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          day,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontFamily: 'Inter',
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        dayData != null
-                                            ? Lottie.asset(
-                                                getWeatherAnimation(
-                                                  dayData['condition'],
-                                                ),
-                                                height: 30,
-                                                width: 30,
-                                              )
-                                            : SizedBox(
-                                                height: 30,
-                                                width: 30,
-                                                child: CircularProgressIndicator(
-                                                  strokeWidth: 2,
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                        Color
-                                                      >(Colors.white),
-                                                ),
-                                              ),
-                                        Text(
-                                          dayData != null
-                                              ? '${dayData['high']}°'
-                                              : '--°',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontFamily: 'Inter',
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        Text(
-                                          dayData != null
-                                              ? '${dayData['low']}°'
-                                              : '--°',
-                                          style: TextStyle(
-                                            color: Color(0xFFBDBDBD),
-                                            fontFamily: 'Inter',
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }),
                               ),
-                            ),
+                              Container(
+                                height: 60,
+                                width: 1,
+                                color: Color(0xFF2F187D),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      Symbols.humidity_high,
+                                      size: 30,
+                                      color: Colors.white,
+                                    ),
+                                    Text(
+                                      _weather != null
+                                          ? '${_weather!.Humidity.round()}%'
+                                          : 'Loading...',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'Inter',
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Humidity',
+                                      style: TextStyle(
+                                        color: Color(0xFFBDBDBD),
+                                        fontFamily: 'Inter',
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                height: 60,
+                                width: 1,
+                                color: Color(0xFF2F187D),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      Symbols.water_drop,
+                                      size: 30,
+                                      color: Colors.white,
+                                    ),
+                                    Text(
+                                      _weather != null
+                                          ? '${_weather!.chance_of_rain}%'
+                                          : 'Loading...',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'Inter',
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Chance of rain',
+                                      style: TextStyle(
+                                        color: Color(0xFFBDBDBD),
+                                        fontFamily: 'Inter',
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
               ),
+
+              SizedBox(height: 20),
+
+              Row(
+                children: [
+                  Text(
+                    'Today',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: 'Inter',
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Spacer(),
+                  Text(
+                    '7 days',
+                    style: TextStyle(
+                      color: Color(0xFFBDBDBD),
+                      fontFamily: 'Inter',
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 20),
+
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFF9900FF),
+                      Color(0xFF413243),
+                      Color(0xFFFF00AA),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(36),
+                ),
+                padding: EdgeInsets.all(2),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(36),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 123,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color(0xFF03000F),
+                          Color(0xFF050017),
+                          Color(0xFF170B3F),
+                        ],
+                      ),
+                    ),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 34,
+                        vertical: 18,
+                      ),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: List.generate(7, (index) {
+                            final day = DateFormat(
+                              'EEE',
+                            ).format(DateTime.now().add(Duration(days: index)));
+
+                            final dayData =
+                                _forecast != null && _forecast!.length > index
+                                ? _forecast![index].toMap()
+                                : null;
+
+                            return Container(
+                              width: 60,
+                              margin: EdgeInsets.only(right: 8),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    day,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Inter',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  dayData != null
+                                      ? Lottie.asset(
+                                          getWeatherAnimation(
+                                            dayData['condition'],
+                                          ),
+                                          height: 30,
+                                          width: 30,
+                                        )
+                                      : SizedBox(
+                                          height: 30,
+                                          width: 30,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                  Colors.white,
+                                                ),
+                                          ),
+                                        ),
+                                  Text(
+                                    dayData != null
+                                        ? '${dayData['high']}°'
+                                        : '--°',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Inter',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text(
+                                    dayData != null
+                                        ? '${dayData['low']}°'
+                                        : '--°',
+                                    style: TextStyle(
+                                      color: Color(0xFFBDBDBD),
+                                      fontFamily: 'Inter',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.1),
             ],
           ),
         ),

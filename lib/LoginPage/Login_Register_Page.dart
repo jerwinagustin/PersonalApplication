@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:personal_application/Auth/Authservice.dart';
 import 'dart:ui';
 import 'package:personal_application/LoginPage/forgotPassword.dart';
-import 'package:personal_application/NavigationBar/Navigation.dart';
+import 'package:personal_application/LoginPage/LoadingScreen.dart';
+import 'package:personal_application/Responsiveness/Responsive.dart';
 
 class AuthSwitcher extends StatelessWidget {
   final bool isLogin;
@@ -98,27 +99,29 @@ class _PasswordFieldState extends State<PasswordField> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return TextField(
       controller: widget.controller,
       obscureText: _obscureText,
       decoration: InputDecoration(
         labelText: 'Password',
-        labelStyle: TextStyle(fontSize: (screenWidth * 0.04).clamp(14.0, 16.0)),
+        labelStyle: TextStyle(
+          fontSize: ResponsiveHelper.getResponsiveFontSize(context, 15.0),
+        ),
         contentPadding: EdgeInsets.symmetric(
-          vertical: screenWidth * 0.05,
-          horizontal: screenWidth * 0.04,
+          vertical: ResponsiveHelper.getResponsiveSpacing(context, 18.0),
+          horizontal: ResponsiveHelper.getResponsiveSpacing(context, 16.0),
         ),
         hintStyle: TextStyle(
           fontFamily: "Inter",
-          fontSize: (screenWidth * 0.025).clamp(10.0, 14.0),
+          fontSize: ResponsiveHelper.getResponsiveFontSize(context, 12.0),
           color: const Color(0xFF818181),
         ),
         filled: true,
         fillColor: Colors.white,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(screenWidth * 0.03),
+          borderRadius: BorderRadius.circular(
+            ResponsiveHelper.getResponsiveSpacing(context, 12.0),
+          ),
         ),
         suffixIcon: IconButton(
           icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
@@ -145,13 +148,15 @@ class _RememberMeState extends State<RememberMe> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Transform.scale(
-          scale: (screenWidth * 0.003).clamp(0.8, 1.2),
+          scale: ResponsiveHelper.isMobile(context)
+              ? 0.9
+              : ResponsiveHelper.isTablet(context)
+              ? 1.0
+              : 1.1,
           child: Checkbox(
             value: isChecked,
             onChanged: (value) {
@@ -166,7 +171,7 @@ class _RememberMeState extends State<RememberMe> {
           'Remember Me',
           style: TextStyle(
             color: Colors.white,
-            fontSize: (screenWidth * 0.035).clamp(12.0, 16.0),
+            fontSize: ResponsiveHelper.getResponsiveFontSize(context, 14.0),
           ),
         ),
       ],
@@ -179,14 +184,12 @@ class ForgotPassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return GestureDetector(
       child: Text(
         'Forgot Password?',
         style: TextStyle(
           fontFamily: 'Inter',
-          fontSize: (screenWidth * 0.03).clamp(11.0, 14.0),
+          fontSize: ResponsiveHelper.getResponsiveFontSize(context, 12.0),
           fontWeight: FontWeight.w500,
           color: Colors.white,
         ),
@@ -212,22 +215,24 @@ class _RegisterPasswordFieldState extends State<RegisterPasswordField> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return TextField(
       controller: widget.controller,
       obscureText: _obscureText,
       decoration: InputDecoration(
         labelText: 'Password',
-        labelStyle: TextStyle(fontSize: (screenWidth * 0.04).clamp(14.0, 16.0)),
+        labelStyle: TextStyle(
+          fontSize: ResponsiveHelper.getResponsiveFontSize(context, 15.0),
+        ),
         filled: true,
         fillColor: Colors.white,
         contentPadding: EdgeInsets.symmetric(
-          horizontal: screenWidth * 0.05,
-          vertical: screenWidth * 0.035,
+          horizontal: ResponsiveHelper.getResponsiveSpacing(context, 18.0),
+          vertical: ResponsiveHelper.getResponsiveSpacing(context, 14.0),
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(screenWidth * 0.03),
+          borderRadius: BorderRadius.circular(
+            ResponsiveHelper.getResponsiveSpacing(context, 12.0),
+          ),
         ),
         suffixIcon: IconButton(
           icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
@@ -256,22 +261,24 @@ class _ConfirmPasswordState extends State<ConfirmPassword> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return TextField(
       controller: widget.controller,
       obscureText: _obscureText,
       decoration: InputDecoration(
         labelText: 'Confirm Password',
-        labelStyle: TextStyle(fontSize: (screenWidth * 0.04).clamp(14.0, 16.0)),
+        labelStyle: TextStyle(
+          fontSize: ResponsiveHelper.getResponsiveFontSize(context, 15.0),
+        ),
         filled: true,
         fillColor: Colors.white,
         contentPadding: EdgeInsets.symmetric(
-          horizontal: screenWidth * 0.05,
-          vertical: screenWidth * 0.035,
+          horizontal: ResponsiveHelper.getResponsiveSpacing(context, 18.0),
+          vertical: ResponsiveHelper.getResponsiveSpacing(context, 14.0),
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(screenWidth * 0.03),
+          borderRadius: BorderRadius.circular(
+            ResponsiveHelper.getResponsiveSpacing(context, 12.0),
+          ),
         ),
         suffixIcon: IconButton(
           icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
@@ -353,7 +360,7 @@ class _LoginPageState extends State<LoginPage> {
       );
       await Future.delayed(const Duration(milliseconds: 500));
       if (!mounted) return;
-      Navigator.pushNamed(context, Navigation.id);
+      Navigator.pushReplacementNamed(context, LoadingScreen.id);
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message ?? 'There is an error';
@@ -429,7 +436,10 @@ class _LoginPageState extends State<LoginPage> {
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Inter',
-                      fontSize: (screenWidth * 0.06).clamp(20.0, 28.0),
+                      fontSize: ResponsiveHelper.getResponsiveFontSize(
+                        context,
+                        24.0,
+                      ),
                     ),
                   ),
                 ),
@@ -441,18 +451,32 @@ class _LoginPageState extends State<LoginPage> {
                     : screenHeight * 0.78,
                 child: ClipRRect(
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(screenWidth * 0.1),
-                    topRight: Radius.circular(screenWidth * 0.1),
+                    topLeft: Radius.circular(
+                      ResponsiveHelper.getResponsiveSpacing(context, 37.0),
+                    ),
+                    topRight: Radius.circular(
+                      ResponsiveHelper.getResponsiveSpacing(context, 37.0),
+                    ),
                   ),
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                     child: Container(
-                      width: screenWidth,
+                      width: ResponsiveHelper.getScreenWidth(context),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.15),
                         borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(screenWidth * 0.1),
-                          topRight: Radius.circular(screenWidth * 0.1),
+                          topLeft: Radius.circular(
+                            ResponsiveHelper.getResponsiveSpacing(
+                              context,
+                              37.0,
+                            ),
+                          ),
+                          topRight: Radius.circular(
+                            ResponsiveHelper.getResponsiveSpacing(
+                              context,
+                              37.0,
+                            ),
+                          ),
                         ),
                         border: Border.all(
                           color: Colors.white.withOpacity(0.3),
@@ -460,10 +484,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       child: SingleChildScrollView(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth * 0.06,
-                          vertical: screenWidth * 0.06,
-                        ),
+                        padding: ResponsiveHelper.getResponsivePadding(context),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -478,10 +499,11 @@ class _LoginPageState extends State<LoginPage> {
                                   : 'Go ahead and register your account',
                               style: TextStyle(
                                 fontFamily: 'Inter',
-                                fontSize: (screenWidth * 0.052).clamp(
-                                  18.0,
-                                  24.0,
-                                ),
+                                fontSize:
+                                    ResponsiveHelper.getResponsiveFontSize(
+                                      context,
+                                      20.0,
+                                    ),
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
@@ -496,10 +518,11 @@ class _LoginPageState extends State<LoginPage> {
                                 fontFamily: 'Inter',
                                 fontWeight: FontWeight.w400,
                                 color: const Color(0xFFBDBDBD),
-                                fontSize: (screenWidth * 0.038).clamp(
-                                  13.0,
-                                  17.0,
-                                ),
+                                fontSize:
+                                    ResponsiveHelper.getResponsiveFontSize(
+                                      context,
+                                      15.0,
+                                    ),
                               ),
                               textAlign: TextAlign.center,
                             ),
@@ -525,9 +548,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildLoginForm() {
-    final screenSize = MediaQuery.of(context).size;
-    final screenWidth = screenSize.width;
-    final screenHeight = screenSize.height;
+    final screenHeight = ResponsiveHelper.getScreenHeight(context);
 
     return Column(
       key: const ValueKey('login'),
@@ -537,16 +558,18 @@ class _LoginPageState extends State<LoginPage> {
           decoration: InputDecoration(
             labelText: 'Email Address',
             labelStyle: TextStyle(
-              fontSize: (screenWidth * 0.04).clamp(14.0, 16.0),
+              fontSize: ResponsiveHelper.getResponsiveFontSize(context, 15.0),
             ),
             filled: true,
             fillColor: Colors.white,
             contentPadding: EdgeInsets.symmetric(
-              vertical: screenWidth * 0.05,
-              horizontal: screenWidth * 0.04,
+              vertical: ResponsiveHelper.getResponsiveSpacing(context, 18.0),
+              horizontal: ResponsiveHelper.getResponsiveSpacing(context, 16.0),
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(screenWidth * 0.03),
+              borderRadius: BorderRadius.circular(
+                ResponsiveHelper.getResponsiveSpacing(context, 12.0),
+              ),
             ),
           ),
         ),
@@ -565,7 +588,7 @@ class _LoginPageState extends State<LoginPage> {
               errorMessage,
               style: TextStyle(
                 color: Colors.redAccent,
-                fontSize: (screenWidth * 0.035).clamp(12.0, 16.0),
+                fontSize: ResponsiveHelper.getResponsiveFontSize(context, 14.0),
               ),
             ),
           ),
@@ -576,9 +599,14 @@ class _LoginPageState extends State<LoginPage> {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF3B1B9C),
               foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(vertical: screenWidth * 0.04),
+              padding: EdgeInsets.symmetric(
+                vertical:
+                    ResponsiveHelper.getResponsiveButtonHeight(context) * 0.3,
+              ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(screenWidth * 0.03),
+                borderRadius: BorderRadius.circular(
+                  ResponsiveHelper.getResponsiveSpacing(context, 12.0),
+                ),
               ),
             ),
             child: Text(
@@ -586,7 +614,7 @@ class _LoginPageState extends State<LoginPage> {
               style: TextStyle(
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w500,
-                fontSize: (screenWidth * 0.035).clamp(13.0, 16.0),
+                fontSize: ResponsiveHelper.getResponsiveFontSize(context, 14.0),
               ),
             ),
           ),
@@ -598,13 +626,18 @@ class _LoginPageState extends State<LoginPage> {
               child: Divider(color: Color(0xFFE6E6E6), thickness: 1),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+              padding: EdgeInsets.symmetric(
+                horizontal: ResponsiveHelper.getResponsiveSpacing(context, 8.0),
+              ),
               child: Text(
                 'Or',
                 style: TextStyle(
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w400,
-                  fontSize: (screenWidth * 0.035).clamp(14.0, 16.0),
+                  fontSize: ResponsiveHelper.getResponsiveFontSize(
+                    context,
+                    15.0,
+                  ),
                   color: const Color(0xFFBDBDBD),
                 ),
               ),
@@ -618,26 +651,49 @@ class _LoginPageState extends State<LoginPage> {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () async {
+              try {
+                await authService.value.signInWithGoogle();
+                if (!mounted) return;
+                Navigator.pushReplacementNamed(context, LoadingScreen.id);
+              } catch (e) {
+                setState(() {
+                  errorMessage = 'Google Sign-In failed. Please try again.';
+                });
+              }
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
               foregroundColor: Colors.black,
-              padding: EdgeInsets.symmetric(vertical: screenWidth * 0.04),
+              padding: EdgeInsets.symmetric(
+                vertical:
+                    ResponsiveHelper.getResponsiveButtonHeight(context) * 0.3,
+              ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(screenWidth * 0.03),
+                borderRadius: BorderRadius.circular(
+                  ResponsiveHelper.getResponsiveSpacing(context, 12.0),
+                ),
               ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('images/Google.png', height: screenWidth * 0.06),
-                SizedBox(width: screenWidth * 0.03),
+                Image.asset(
+                  'images/Google.png',
+                  height: ResponsiveHelper.getResponsiveIconSize(context, 24.0),
+                ),
+                SizedBox(
+                  width: ResponsiveHelper.getResponsiveSpacing(context, 12.0),
+                ),
                 Text(
                   'Continue with Google',
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w500,
-                    fontSize: (screenWidth * 0.035).clamp(14.0, 16.0),
+                    fontSize: ResponsiveHelper.getResponsiveFontSize(
+                      context,
+                      15.0,
+                    ),
                   ),
                 ),
               ],
@@ -650,7 +706,7 @@ class _LoginPageState extends State<LoginPage> {
           text: TextSpan(
             style: TextStyle(
               fontFamily: 'Inter',
-              fontSize: (screenWidth * 0.03).clamp(12.0, 14.0),
+              fontSize: ResponsiveHelper.getResponsiveFontSize(context, 13.0),
               fontWeight: FontWeight.w500,
               color: Colors.white,
             ),
@@ -673,9 +729,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildRegisterForm() {
-    final screenSize = MediaQuery.of(context).size;
-    final screenWidth = screenSize.width;
-    final screenHeight = screenSize.height;
+    final screenHeight = ResponsiveHelper.getScreenHeight(context);
 
     return Column(
       key: const ValueKey('register'),
@@ -685,16 +739,18 @@ class _LoginPageState extends State<LoginPage> {
           decoration: InputDecoration(
             labelText: 'Username',
             labelStyle: TextStyle(
-              fontSize: (screenWidth * 0.04).clamp(14.0, 16.0),
+              fontSize: ResponsiveHelper.getResponsiveFontSize(context, 15.0),
             ),
             filled: true,
             fillColor: Colors.white,
             contentPadding: EdgeInsets.symmetric(
-              horizontal: screenWidth * 0.05,
-              vertical: screenWidth * 0.035,
+              horizontal: ResponsiveHelper.getResponsiveSpacing(context, 18.0),
+              vertical: ResponsiveHelper.getResponsiveSpacing(context, 14.0),
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(screenWidth * 0.03),
+              borderRadius: BorderRadius.circular(
+                ResponsiveHelper.getResponsiveSpacing(context, 12.0),
+              ),
             ),
           ),
         ),
@@ -704,16 +760,18 @@ class _LoginPageState extends State<LoginPage> {
           decoration: InputDecoration(
             labelText: 'Email Address',
             labelStyle: TextStyle(
-              fontSize: (screenWidth * 0.04).clamp(14.0, 16.0),
+              fontSize: ResponsiveHelper.getResponsiveFontSize(context, 15.0),
             ),
             filled: true,
             fillColor: Colors.white,
             contentPadding: EdgeInsets.symmetric(
-              horizontal: screenWidth * 0.05,
-              vertical: screenWidth * 0.035,
+              horizontal: ResponsiveHelper.getResponsiveSpacing(context, 18.0),
+              vertical: ResponsiveHelper.getResponsiveSpacing(context, 14.0),
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(screenWidth * 0.03),
+              borderRadius: BorderRadius.circular(
+                ResponsiveHelper.getResponsiveSpacing(context, 12.0),
+              ),
             ),
           ),
         ),
@@ -728,7 +786,7 @@ class _LoginPageState extends State<LoginPage> {
               passwordMessage!,
               style: TextStyle(
                 fontFamily: 'Inter',
-                fontSize: (screenWidth * 0.03).clamp(12.0, 14.0),
+                fontSize: ResponsiveHelper.getResponsiveFontSize(context, 13.0),
                 fontWeight: FontWeight.w500,
                 color: passwordMatch == true ? Colors.green : Colors.red,
               ),
@@ -741,7 +799,7 @@ class _LoginPageState extends State<LoginPage> {
               errorMessage,
               style: TextStyle(
                 color: Colors.redAccent,
-                fontSize: (screenWidth * 0.035).clamp(12.0, 16.0),
+                fontSize: ResponsiveHelper.getResponsiveFontSize(context, 14.0),
               ),
             ),
           ),
@@ -753,9 +811,14 @@ class _LoginPageState extends State<LoginPage> {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF3B1B9C),
               foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(vertical: screenWidth * 0.04),
+              padding: EdgeInsets.symmetric(
+                vertical:
+                    ResponsiveHelper.getResponsiveButtonHeight(context) * 0.3,
+              ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(screenWidth * 0.03),
+                borderRadius: BorderRadius.circular(
+                  ResponsiveHelper.getResponsiveSpacing(context, 12.0),
+                ),
               ),
             ),
             child: Text(
@@ -763,7 +826,7 @@ class _LoginPageState extends State<LoginPage> {
               style: TextStyle(
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w500,
-                fontSize: (screenWidth * 0.035).clamp(14.0, 16.0),
+                fontSize: ResponsiveHelper.getResponsiveFontSize(context, 15.0),
                 color: Colors.white,
               ),
             ),
@@ -775,7 +838,7 @@ class _LoginPageState extends State<LoginPage> {
           text: TextSpan(
             style: TextStyle(
               fontFamily: 'Inter',
-              fontSize: (screenWidth * 0.03).clamp(12.0, 14.0),
+              fontSize: ResponsiveHelper.getResponsiveFontSize(context, 13.0),
               fontWeight: FontWeight.w500,
               color: Colors.white,
             ),

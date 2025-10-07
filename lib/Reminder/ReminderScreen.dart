@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:personal_application/Reminder/reminderTime.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:personal_application/Reminder_Call/reminder_model.dart';
+import 'package:personal_application/Reminder_Call/reminder_service.dart';
 
 class ReminderScreen extends StatefulWidget {
   static const String id = 'ReminderScreen';
@@ -15,6 +17,130 @@ class ReminderScreen extends StatefulWidget {
 class _ReminderScreenState extends State<ReminderScreen> {
   DateTime focusedDay = DateTime.now();
   DateTime? selectedDay = DateTime.now();
+  List<Reminder> reminders = [];
+  bool isLoading = true;
+  String? selectedReminderId;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadReminders();
+  }
+
+  void _loadReminders() {
+    if (selectedDay != null && ReminderService.isUserAuthenticated()) {
+      ReminderService.getRemindersForDate(selectedDay!).listen(
+        (reminderList) {
+          setState(() {
+            reminders = reminderList;
+            isLoading = false;
+          });
+        },
+        onError: (error) {
+          setState(() {
+            isLoading = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error loading reminders: $error'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        },
+      );
+    } else {
+      setState(() {
+        reminders = [];
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _refreshReminders() async {
+    setState(() {
+      isLoading = true;
+      selectedReminderId = null;
+    });
+    _loadReminders();
+  }
+
+  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    setState(() {
+      this.selectedDay = selectedDay;
+      this.focusedDay = focusedDay;
+      isLoading = true;
+      selectedReminderId = null;
+    });
+    _loadReminders();
+  }
+
+  Future<void> _deleteReminder(Reminder reminder) async {
+    bool? confirm = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color(0xFF170B3F),
+          title: Text(
+            'Delete Reminder',
+            style: TextStyle(color: Colors.white, fontFamily: 'Inter'),
+          ),
+          content: Text(
+            'Are you sure you want to delete "${reminder.reminderText}"?',
+            style: TextStyle(color: Colors.white70, fontFamily: 'Inter'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('Cancel', style: TextStyle(color: Colors.white70)),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text('Delete', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirm == true) {
+      try {
+        await ReminderService.deleteReminder(reminder.id);
+        setState(() {
+          selectedReminderId = null;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Reminder deleted successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to delete reminder: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  void _editReminder(Reminder reminder) {
+    setState(() {
+      selectedReminderId = null;
+    });
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Remindertime(
+          selectedDate: reminder.date,
+          existingReminder: reminder,
+        ),
+      ),
+    ).then((_) {
+      _refreshReminders();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,16 +227,12 @@ class _ReminderScreenState extends State<ReminderScreen> {
         lastDay: DateTime.utc(9999, 12, 31),
         focusedDay: focusedDay,
         selectedDayPredicate: (day) => isSameDay(selectedDay, day),
-        onDaySelected: (selDay, focDay) {
-          setState(() {
-            selectedDay = selDay;
-            focusedDay = focDay;
-          });
-        },
+        onDaySelected: _onDaySelected,
         calendarStyle: CalendarStyle(
           defaultTextStyle: TextStyle(
             color: Colors.white,
-            fontSize: 14,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
             shadows: [
               Shadow(
                 offset: Offset(1, 1),
@@ -120,7 +242,9 @@ class _ReminderScreenState extends State<ReminderScreen> {
             ],
           ),
           weekendTextStyle: TextStyle(
-            color: Colors.white,
+            color: Colors.white70,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
             shadows: [
               Shadow(
                 offset: Offset(1, 1),
@@ -130,8 +254,8 @@ class _ReminderScreenState extends State<ReminderScreen> {
             ],
           ),
           outsideTextStyle: TextStyle(
-            color: Colors.white.withOpacity(0.4),
-            fontSize: 14,
+            color: Colors.white.withOpacity(0.3),
+            fontSize: 16,
             shadows: [
               Shadow(
                 offset: Offset(1, 1),
@@ -140,11 +264,14 @@ class _ReminderScreenState extends State<ReminderScreen> {
               ),
             ],
           ),
-          todayDecoration: BoxDecoration(),
+          todayDecoration: BoxDecoration(
+            color: Colors.amber.withOpacity(0.3),
+            shape: BoxShape.circle,
+          ),
           todayTextStyle: TextStyle(
-            color: Colors.yellow,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
-            fontSize: 14,
+            fontSize: 16,
             shadows: [
               Shadow(
                 offset: Offset(1, 1),
@@ -153,11 +280,14 @@ class _ReminderScreenState extends State<ReminderScreen> {
               ),
             ],
           ),
-          selectedDecoration: BoxDecoration(),
+          selectedDecoration: BoxDecoration(
+            color: Colors.deepPurpleAccent.withOpacity(0.6),
+            shape: BoxShape.circle,
+          ),
           selectedTextStyle: TextStyle(
-            color: Colors.cyanAccent,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
-            fontSize: 14,
+            fontSize: 16,
             shadows: [
               Shadow(
                 offset: Offset(1, 1),
@@ -172,7 +302,8 @@ class _ReminderScreenState extends State<ReminderScreen> {
           titleCentered: true,
           titleTextStyle: TextStyle(
             color: Colors.white,
-            fontSize: 18,
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
             shadows: [
               Shadow(
                 offset: Offset(1, 1),
@@ -181,8 +312,18 @@ class _ReminderScreenState extends State<ReminderScreen> {
               ),
             ],
           ),
-          leftChevronIcon: Icon(Icons.chevron_left, color: Colors.white),
-          rightChevronIcon: Icon(Icons.chevron_right, color: Colors.white),
+          leftChevronIcon: Icon(
+            Icons.chevron_left,
+            color: Colors.white,
+            size: 28,
+          ),
+          rightChevronIcon: Icon(
+            Icons.chevron_right,
+            color: Colors.white,
+            size: 28,
+          ),
+          leftChevronPadding: EdgeInsets.all(12),
+          rightChevronPadding: EdgeInsets.all(12),
         ),
       ),
     );
@@ -239,13 +380,15 @@ class _ReminderScreenState extends State<ReminderScreen> {
                       ),
                       Spacer(),
                       IconButton(
-                        onPressed: () {
-                          setState(() {
-                            Navigator.pushReplacementNamed(
-                              context,
-                              Remindertime.id,
-                            );
-                          });
+                        onPressed: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  Remindertime(selectedDate: selectedDay),
+                            ),
+                          );
+                          _refreshReminders();
                         },
                         icon: Icon(
                           Icons.more_horiz,
@@ -257,11 +400,258 @@ class _ReminderScreenState extends State<ReminderScreen> {
                   ),
                 ),
 
+                SizedBox(height: 12),
+
                 Expanded(
                   child: Container(
                     width: double.infinity,
-                    alignment: Alignment.center,
-                    child: Text("", style: TextStyle(color: Colors.white)),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 35.0),
+                      child: RefreshIndicator(
+                        onRefresh: _refreshReminders,
+                        color: Colors.deepPurpleAccent,
+                        child: isLoading
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
+                              )
+                            : reminders.isEmpty
+                            ? SingleChildScrollView(
+                                physics: AlwaysScrollableScrollPhysics(),
+                                child: Container(
+                                  height: 200,
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.event_available_outlined,
+                                          color: Colors.white60,
+                                          size: 64,
+                                        ),
+                                        SizedBox(height: 20),
+                                        Text(
+                                          'No reminders for this date',
+                                          style: TextStyle(
+                                            color: Colors.white70,
+                                            fontFamily: 'Inter',
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        SizedBox(height: 12),
+                                        Text(
+                                          'Tap the + button to create your first reminder',
+                                          style: TextStyle(
+                                            color: Colors.white.withOpacity(
+                                              0.5,
+                                            ),
+                                            fontFamily: 'Inter',
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : ListView.separated(
+                                physics: AlwaysScrollableScrollPhysics(),
+                                itemCount: reminders.length,
+                                separatorBuilder: (context, index) => Column(
+                                  children: [
+                                    SizedBox(height: 12),
+                                    Divider(
+                                      color: Color(0xFFBDBDBD),
+                                      thickness: 2,
+                                    ),
+                                    SizedBox(height: 12),
+                                  ],
+                                ),
+                                itemBuilder: (context, index) {
+                                  final reminder = reminders[index];
+                                  final isSelected =
+                                      selectedReminderId == reminder.id;
+
+                                  return GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        selectedReminderId = isSelected
+                                            ? null
+                                            : reminder.id;
+                                      });
+                                    },
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 8,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 10,
+                                                  vertical: 4,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color:
+                                                      Colors.deepPurpleAccent,
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                                child: Text(
+                                                  reminder.name,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontFamily: 'Inter',
+                                                  ),
+                                                ),
+                                              ),
+                                              if (isSelected)
+                                                Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () =>
+                                                          _editReminder(
+                                                            reminder,
+                                                          ),
+                                                      child: Container(
+                                                        padding: EdgeInsets.all(
+                                                          10,
+                                                        ),
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.blue
+                                                              .withOpacity(
+                                                                0.15,
+                                                              ),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                12,
+                                                              ),
+                                                          border: Border.all(
+                                                            color: Colors.blue
+                                                                .withOpacity(
+                                                                  0.3,
+                                                                ),
+                                                            width: 1,
+                                                          ),
+                                                        ),
+                                                        child: Icon(
+                                                          Icons.edit_outlined,
+                                                          color:
+                                                              Colors.blue[300],
+                                                          size: 18,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 12),
+                                                    GestureDetector(
+                                                      onTap: () =>
+                                                          _deleteReminder(
+                                                            reminder,
+                                                          ),
+                                                      child: Container(
+                                                        padding: EdgeInsets.all(
+                                                          10,
+                                                        ),
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.red
+                                                              .withOpacity(
+                                                                0.15,
+                                                              ),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                12,
+                                                              ),
+                                                          border: Border.all(
+                                                            color: Colors.red
+                                                                .withOpacity(
+                                                                  0.3,
+                                                                ),
+                                                            width: 1,
+                                                          ),
+                                                        ),
+                                                        child: Icon(
+                                                          Icons.delete_outline,
+                                                          color:
+                                                              Colors.red[300],
+                                                          size: 18,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                            ],
+                                          ),
+
+                                          SizedBox(height: 10),
+
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                flex: 2,
+                                                child: Text(
+                                                  reminder.reminderText,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'Inter',
+                                                  ),
+                                                ),
+                                              ),
+
+                                              SizedBox(width: 8),
+
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                    reminder.formattedTimeRange,
+                                                    style: TextStyle(
+                                                      color: Color(0xFFBDBDBD),
+                                                      fontFamily: 'Inter',
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 4),
+                                                  Text(
+                                                    reminder.location,
+                                                    style: TextStyle(
+                                                      color: Color(0xFFBDBDBD),
+                                                      fontFamily: 'Inter',
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                      ),
+                    ),
                   ),
                 ),
               ],

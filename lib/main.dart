@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:personal_application/DiaryPage/DiaryNote.dart';
 import 'package:personal_application/DiaryPage/Update_Delete.dart';
 import 'package:personal_application/LoginPage/Login_Register_Page.dart';
+import 'package:personal_application/LoginPage/LoadingScreen.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:personal_application/LoginPage/forgotPassword.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
       initialRoute: LoginPage.id,
       routes: {
         LoginPage.id: (context) => LoginPage(),
+        LoadingScreen.id: (context) => LoadingScreen(),
         forgotPassword.id: (context) => forgotPassword(),
         Navigation.id: (context) => Navigation(),
         Diarynote.id: (context) => Diarynote(),
