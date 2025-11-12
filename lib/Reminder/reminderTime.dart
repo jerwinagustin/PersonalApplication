@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:personal_application/Reminder/ReminderScreen.dart';
 import 'package:personal_application/Reminder_Call/reminder_model.dart';
 import 'package:personal_application/Reminder_Call/reminder_service.dart';
+import 'package:personal_application/Notifications/notification_service.dart';
 
 class TimePicker extends StatefulWidget {
   final Function(String) onTimeChanged;
@@ -306,6 +307,16 @@ class _SetUp extends State<SetUp> {
           widget.existingReminder!.id,
           reminder,
         );
+        // Best-effort: refresh notifications; do not fail update if scheduling errors occur
+        try {
+          await NotificationService.cancelReminderNotifications(
+            widget.existingReminder!.id,
+          );
+          await NotificationService.scheduleReminderNotifications(
+            reminder,
+            widget.existingReminder!.id,
+          );
+        } catch (_) {}
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Reminder updated successfully!'),
@@ -313,7 +324,14 @@ class _SetUp extends State<SetUp> {
           ),
         );
       } else {
-        await ReminderService.saveReminder(reminder);
+        final String savedId = await ReminderService.saveReminder(reminder);
+        // Best-effort: schedule notifications; do not fail save if scheduling errors occur
+        try {
+          await NotificationService.scheduleReminderNotifications(
+            reminder,
+            savedId,
+          );
+        } catch (_) {}
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Reminder saved successfully!'),
@@ -322,7 +340,7 @@ class _SetUp extends State<SetUp> {
         );
       }
 
-      Navigator.pushReplacementNamed(context, Navigation.id);
+      Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -631,7 +649,7 @@ class _Remindertime extends State<Remindertime> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime currentDate = widget.selectedDate ?? DateTime.now();
+    final DateTime currentDate = widget.selectedDate ?? DateTime.now();
 
     return WillPopScope(
       onWillPop: () async {
@@ -642,68 +660,67 @@ class _Remindertime extends State<Remindertime> {
         return true;
       },
       child: Scaffold(
-        backgroundColor: Color(0xFF06011D),
+        backgroundColor: const Color(0xFF06011D),
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("images/ReminderScreen.png"),
+              image: AssetImage('images/ReminderScreen.png'),
               fit: BoxFit.cover,
             ),
           ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 50),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+          child: SafeArea(
+            child: Scrollbar(
+              thumbVisibility: true,
+              interactive: true,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SafeArea(
-                      child: IconButton(
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(
-                            context,
-                            Navigation.id,
-                          );
-                        },
-                        icon: Icon(
-                          Icons.arrow_back,
-                          size: 30,
-                          color: Colors.white,
+                    const SizedBox(height: 24),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            size: 30,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                    ),
-
-                    SafeArea(
-                      child: Text(
-                        widget.existingReminder != null
-                            ? 'Edit Your Reminder'
-                            : 'Make Your Reminder',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 20,
+                        const SizedBox(width: 8),
+                        Text(
+                          widget.existingReminder != null
+                              ? 'Edit Your Reminder'
+                              : 'Make Your Reminder',
+                          style: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
                         ),
-                      ),
+                      ],
                     ),
+                    const SizedBox(height: 24),
+                    TimePicker(
+                      onTimeChanged: _updateSelectedTime,
+                      initialTime: widget.existingReminder?.timeFrom,
+                    ),
+                    const SizedBox(height: 20),
+                    SetUp(
+                      selectedDate: currentDate,
+                      selectedTime: selectedTime,
+                      existingReminder: widget.existingReminder,
+                    ),
+                    const SizedBox(height: 24),
                   ],
                 ),
-
-                SizedBox(height: 50),
-
-                TimePicker(
-                  onTimeChanged: _updateSelectedTime,
-                  initialTime: widget.existingReminder?.timeFrom,
-                ),
-                SizedBox(height: 20),
-                SetUp(
-                  selectedDate: currentDate,
-                  selectedTime: selectedTime,
-                  existingReminder: widget.existingReminder,
-                ),
-              ],
+              ),
             ),
           ),
         ),

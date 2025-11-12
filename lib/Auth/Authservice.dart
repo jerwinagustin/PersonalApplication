@@ -109,11 +109,55 @@ class Authservice {
         scopes: ['email', 'profile'],
       );
 
+      // Sign out from Google first
       await googleSignIn.signOut();
+      
+      // Then sign out from Firebase
       await firebaseAuth.signOut();
+      
+      // Notify listeners that auth state has changed
+      authService.notifyListeners();
     } catch (e) {
       print('Error signing out: $e');
+      // Ensure Firebase sign out even if Google sign out fails
       await firebaseAuth.signOut();
+      authService.notifyListeners();
+    }
+  }
+
+  // Enhanced secure sign out method for logout page
+  Future<bool> secureSignOut() async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId: kIsWeb
+            ? '461342906551-ec5238uf2mnpb7os44fvqs61hps6a8q9.apps.googleusercontent.com'
+            : null,
+        scopes: ['email', 'profile'],
+      );
+
+      // Check if user is currently signed in
+      if (currentUser == null) {
+        return false;
+      }
+
+      // Sign out from Google services
+      try {
+        await googleSignIn.signOut();
+      } catch (e) {
+        print('Google sign out error: $e');
+        // Continue with Firebase sign out even if Google fails
+      }
+      
+      // Sign out from Firebase
+      await firebaseAuth.signOut();
+      
+      // Clear any cached authentication data
+      authService.notifyListeners();
+      
+      return true;
+    } catch (e) {
+      print('Error during secure sign out: $e');
+      return false;
     }
   }
 

@@ -57,6 +57,7 @@ class DefaultFirebaseOptions {
     authDomain: 'loglife-e0ad5.firebaseapp.com',
     storageBucket: 'loglife-e0ad5.firebasestorage.app',
     measurementId: 'G-6BWLX842QF',
+    databaseURL: 'https://loglife-e0ad5-default-rtdb.firebaseio.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(

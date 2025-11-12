@@ -5,6 +5,7 @@ import 'package:personal_application/Reminder/reminderTime.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:personal_application/Reminder_Call/reminder_model.dart';
 import 'package:personal_application/Reminder_Call/reminder_service.dart';
+import 'package:personal_application/Notifications/notification_service.dart';
 
 class ReminderScreen extends StatefulWidget {
   static const String id = 'ReminderScreen';
@@ -105,6 +106,12 @@ class _ReminderScreenState extends State<ReminderScreen> {
     if (confirm == true) {
       try {
         await ReminderService.deleteReminder(reminder.id);
+        // Cancel any scheduled notifications for this reminder (best-effort)
+        try {
+          await NotificationService.cancelReminderNotifications(reminder.id);
+        } catch (_) {
+          // Ignore cancellation errors; deletion succeeded
+        }
         setState(() {
           selectedReminderId = null;
         });
@@ -153,39 +160,49 @@ class _ReminderScreenState extends State<ReminderScreen> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 50),
-              SafeArea(
-                child: Text(
-                  'Calendar',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w500,
-                    fontSize: 24,
-                    shadows: [
-                      Shadow(
-                        offset: Offset(2, 2),
-                        blurRadius: 4,
-                        color: Colors.black54,
-                      ),
-                    ],
+        child: SafeArea(
+          child: RefreshIndicator(
+            onRefresh: _refreshReminders,
+            color: Colors.deepPurpleAccent,
+            child: Scrollbar(
+              thumbVisibility: true,
+              interactive: true,
+              child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 24),
+                  Text(
+                    'Calendar',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w500,
+                      fontSize: 24,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(2, 2),
+                          blurRadius: 4,
+                          color: Colors.black54,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+
+                  SizedBox(height: 10),
+                  Center(child: _buildCalendarCard()),
+
+                  SizedBox(height: 15),
+                  _buildReminderCard(),
+                  SizedBox(height: 24),
+                ],
               ),
-
-              SizedBox(height: 10),
-              Center(child: _buildCalendarCard()),
-
-              SizedBox(height: 15),
-              Expanded(child: _buildReminderCard()),
-            ],
+            ),
           ),
         ),
+      ),
       ),
     );
   }
@@ -402,63 +419,54 @@ class _ReminderScreenState extends State<ReminderScreen> {
 
                 SizedBox(height: 12),
 
-                Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 35.0),
-                      child: RefreshIndicator(
-                        onRefresh: _refreshReminders,
-                        color: Colors.deepPurpleAccent,
-                        child: isLoading
-                            ? Center(
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                ),
-                              )
-                            : reminders.isEmpty
-                            ? SingleChildScrollView(
-                                physics: AlwaysScrollableScrollPhysics(),
-                                child: Container(
-                                  height: 200,
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.event_available_outlined,
-                                          color: Colors.white60,
-                                          size: 64,
-                                        ),
-                                        SizedBox(height: 20),
-                                        Text(
-                                          'No reminders for this date',
-                                          style: TextStyle(
-                                            color: Colors.white70,
-                                            fontFamily: 'Inter',
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        SizedBox(height: 12),
-                                        Text(
-                                          'Tap the + button to create your first reminder',
-                                          style: TextStyle(
-                                            color: Colors.white.withOpacity(
-                                              0.5,
-                                            ),
-                                            fontFamily: 'Inter',
-                                            fontSize: 15,
-                                          ),
-                                        ),
-                                      ],
+                Container(
+                  width: double.infinity,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 35.0),
+                    child: isLoading
+                        ? Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 40),
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
+                        : reminders.isEmpty
+                            ? Column(
+                                children: [
+                                  SizedBox(height: 20),
+                                  Icon(
+                                    Icons.event_available_outlined,
+                                    color: Colors.white60,
+                                    size: 64,
+                                  ),
+                                  SizedBox(height: 20),
+                                  Text(
+                                    'No reminders for this date',
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontFamily: 'Inter',
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                ),
+                                  SizedBox(height: 12),
+                                  Text(
+                                    'Tap the ••• button to create your first reminder',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.5),
+                                      fontFamily: 'Inter',
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                  SizedBox(height: 24),
+                                ],
                               )
                             : ListView.separated(
-                                physics: AlwaysScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
                                 itemCount: reminders.length,
                                 separatorBuilder: (context, index) => Column(
                                   children: [
@@ -650,8 +658,6 @@ class _ReminderScreenState extends State<ReminderScreen> {
                                   );
                                 },
                               ),
-                      ),
-                    ),
                   ),
                 ),
               ],

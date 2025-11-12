@@ -4,6 +4,7 @@ import 'package:personal_application/DiaryPage/Diary.dart';
 import 'package:personal_application/DiaryPage/DiaryNote.dart';
 import 'package:personal_application/Reminder/ReminderScreen.dart';
 import 'package:personal_application/Weather/weatherScreen.dart';
+import 'package:personal_application/LogoutPage/logout.dart';
 
 class Navigation extends StatefulWidget {
   static const String id = 'Navigation';
@@ -22,6 +23,7 @@ class _Navigation extends State<Navigation> {
     Diary(),
     Weatherscreen(),
     ReminderScreen(),
+    Logout(),
   ];
 
   void NavTap(int index) {
@@ -97,6 +99,10 @@ class _Navigation extends State<Navigation> {
                         icon: Icon(Icons.calendar_today),
                         label: 'Reminder',
                       ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.person_outline_rounded),
+                        label: 'Account',
+                      ),
                     ],
                   ),
                 ),
@@ -109,7 +115,7 @@ class _Navigation extends State<Navigation> {
                 padding: const EdgeInsets.only(bottom: 100),
                 child: FloatingActionButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, Diarynote.id);
+                    Navigator.pushNamed(context, Diarynote.id);
                   },
                   backgroundColor: Color(0xFF4E2FB8),
                   shape: CircleBorder(),

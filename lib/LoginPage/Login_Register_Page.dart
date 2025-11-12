@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:personal_application/Auth/Authservice.dart';
 import 'dart:ui';
 import 'package:personal_application/LoginPage/forgotPassword.dart';
 import 'package:personal_application/LoginPage/LoadingScreen.dart';
 import 'package:personal_application/Responsiveness/Responsive.dart';
+import 'package:personal_application/LoginPage/TermsPrivacyDialog.dart';
 
 class AuthSwitcher extends StatelessWidget {
   final bool isLogin;
@@ -358,9 +360,7 @@ class _LoginPageState extends State<LoginPage> {
         email: emailController.text,
         password: passwordController.text,
       );
-      await Future.delayed(const Duration(milliseconds: 500));
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, LoadingScreen.id);
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message ?? 'There is an error';
@@ -710,16 +710,46 @@ class _LoginPageState extends State<LoginPage> {
               fontWeight: FontWeight.w500,
               color: Colors.white,
             ),
-            children: const [
-              TextSpan(text: 'By clicking continue, you agree to our '),
-              TextSpan(
-                text: 'Terms of Service',
-                style: TextStyle(color: Colors.black),
+            children: [
+              const TextSpan(text: 'By clicking continue, you agree to our '),
+              WidgetSpan(
+                child: GestureDetector(
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    showTermsPrivacyDialog(context, 'terms');
+                  },
+                  child: Text(
+                    'Terms of Service',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: ResponsiveHelper.getResponsiveFontSize(context, 13.0),
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                      decoration: TextDecoration.underline,
+                      decorationColor: Colors.black,
+                    ),
+                  ),
+                ),
               ),
-              TextSpan(text: ' and '),
-              TextSpan(
-                text: 'Privacy Policy',
-                style: TextStyle(color: Colors.black),
+              const TextSpan(text: ' and '),
+              WidgetSpan(
+                child: GestureDetector(
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    showTermsPrivacyDialog(context, 'privacy');
+                  },
+                  child: Text(
+                    'Privacy Policy',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: ResponsiveHelper.getResponsiveFontSize(context, 13.0),
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                      decoration: TextDecoration.underline,
+                      decorationColor: Colors.black,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -842,16 +872,46 @@ class _LoginPageState extends State<LoginPage> {
               fontWeight: FontWeight.w500,
               color: Colors.white,
             ),
-            children: const [
-              TextSpan(text: 'By clicking continue, you agree to our '),
-              TextSpan(
-                text: 'Terms of Service',
-                style: TextStyle(color: Colors.black),
+            children: [
+              const TextSpan(text: 'By clicking continue, you agree to our '),
+              WidgetSpan(
+                child: GestureDetector(
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    showTermsPrivacyDialog(context, 'terms');
+                  },
+                  child: Text(
+                    'Terms of Service',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: ResponsiveHelper.getResponsiveFontSize(context, 13.0),
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                      decoration: TextDecoration.underline,
+                      decorationColor: Colors.black,
+                    ),
+                  ),
+                ),
               ),
-              TextSpan(text: ' and '),
-              TextSpan(
-                text: 'Privacy Policy',
-                style: TextStyle(color: Colors.black),
+              const TextSpan(text: ' and '),
+              WidgetSpan(
+                child: GestureDetector(
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    showTermsPrivacyDialog(context, 'privacy');
+                  },
+                  child: Text(
+                    'Privacy Policy',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: ResponsiveHelper.getResponsiveFontSize(context, 13.0),
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                      decoration: TextDecoration.underline,
+                      decorationColor: Colors.black,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

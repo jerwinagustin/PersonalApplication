@@ -101,7 +101,7 @@ class _UpdateDelete extends State<UpdateDelete> {
         );
       }
 
-      Navigator.pushReplacementNamed(context, Navigation.id);
+      Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -158,7 +158,7 @@ class _UpdateDelete extends State<UpdateDelete> {
           ),
         );
 
-        Navigator.pushReplacementNamed(context, Navigation.id);
+        Navigator.pop(context);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -240,10 +240,7 @@ class _UpdateDelete extends State<UpdateDelete> {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      Navigator.pushReplacementNamed(
-                                        context,
-                                        Navigation.id,
-                                      );
+                                      Navigator.of(context).pop();
                                     },
                                     child: Icon(
                                       Icons.arrow_back,

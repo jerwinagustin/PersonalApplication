@@ -1,21 +1,18 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'reminder_model.dart';
 
 class ReminderService {
-  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static final FirebaseAuth _auth = FirebaseAuth.instance;
+  static final FirebaseDatabase _database = FirebaseDatabase.instance;
 
   static String? get currentUserId => _auth.currentUser?.uid;
 
-  static CollectionReference get _remindersCollection {
+  static DatabaseReference _remindersRef() {
     if (currentUserId == null) {
       throw Exception('User not authenticated');
     }
-    return _firestore
-        .collection('users')
-        .doc(currentUserId)
-        .collection('reminders');
+    return _database.ref('users/${currentUserId}/reminders');
   }
 
   static Future<String> saveReminder(Reminder reminder) async {
@@ -37,13 +34,9 @@ class ReminderService {
         throw Exception('Reminder name and text cannot be empty');
       }
 
-      final collection = _firestore
-          .collection('users')
-          .doc(currentUserId)
-          .collection('reminders');
-
-      DocumentReference docRef = await collection.add(reminder.toFirestore());
-      return docRef.id;
+      final ref = _remindersRef().push();
+      await ref.set(reminder.toRealtime());
+      return ref.key ?? '';
     } catch (e) {
       print('Error saving reminder: $e');
       throw Exception('Failed to save reminder: $e');
@@ -55,16 +48,23 @@ class ReminderService {
       return Stream.value([]);
     }
 
-    return _remindersCollection
-        .orderBy('date', descending: false)
-        .snapshots()
-        .map((snapshot) {
-          List<Reminder> reminders = snapshot.docs
-              .map((doc) => Reminder.fromFirestore(doc))
-              .toList();
-          reminders.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-          return reminders;
-        });
+    final query = _remindersRef().orderByChild('date');
+    return query.onValue.map((event) {
+      final snap = event.snapshot;
+      final List<Reminder> reminders = [];
+      if (snap.exists) {
+        for (final child in snap.children) {
+          final key = child.key;
+          final value = child.value;
+          if (key != null && value is Map) {
+            final data = Map<String, dynamic>.from(value as Map);
+            reminders.add(Reminder.fromRealtime(key, data));
+          }
+        }
+      }
+      reminders.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      return reminders;
+    });
   }
 
   static Stream<List<Reminder>> getRemindersForDate(DateTime date) {
@@ -84,23 +84,31 @@ class ReminderService {
     DateTime startOfDay = DateTime(date.year, date.month, date.day, 0, 0, 0);
     DateTime endOfDay = DateTime(date.year, date.month, date.day, 23, 59, 59);
 
-    return _remindersCollection
-        .where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(startOfDay))
-        .where('date', isLessThanOrEqualTo: Timestamp.fromDate(endOfDay))
-        .snapshots()
-        .map((snapshot) {
-          List<Reminder> reminders = snapshot.docs
-              .map((doc) => Reminder.fromFirestore(doc))
-              .toList();
-          reminders.sort((a, b) {
-            int dateComparison = a.date.compareTo(b.date);
-            if (dateComparison == 0) {
-              return a.createdAt.compareTo(b.createdAt);
-            }
-            return dateComparison;
-          });
-          return reminders;
-        });
+    final start = startOfDay.millisecondsSinceEpoch;
+    final end = endOfDay.millisecondsSinceEpoch;
+    final query = _remindersRef().orderByChild('date').startAt(start).endAt(end);
+    return query.onValue.map((event) {
+      final snap = event.snapshot;
+      final List<Reminder> reminders = [];
+      if (snap.exists) {
+        for (final child in snap.children) {
+          final key = child.key;
+          final value = child.value;
+          if (key != null && value is Map) {
+            final data = Map<String, dynamic>.from(value as Map);
+            reminders.add(Reminder.fromRealtime(key, data));
+          }
+        }
+      }
+      reminders.sort((a, b) {
+        int dateComparison = a.date.compareTo(b.date);
+        if (dateComparison == 0) {
+          return a.createdAt.compareTo(b.createdAt);
+        }
+        return dateComparison;
+      });
+      return reminders;
+    });
   }
 
   static Future<void> updateReminder(
@@ -108,7 +116,7 @@ class ReminderService {
     Reminder reminder,
   ) async {
     try {
-      await _remindersCollection.doc(reminderId).update(reminder.toFirestore());
+      await _remindersRef().child(reminderId).update(reminder.toRealtime());
     } catch (e) {
       throw Exception('Failed to update reminder: $e');
     }
@@ -116,7 +124,7 @@ class ReminderService {
 
   static Future<void> deleteReminder(String reminderId) async {
     try {
-      await _remindersCollection.doc(reminderId).delete();
+      await _remindersRef().child(reminderId).remove();
     } catch (e) {
       throw Exception('Failed to delete reminder: $e');
     }
@@ -124,9 +132,10 @@ class ReminderService {
 
   static Future<Reminder?> getReminderById(String reminderId) async {
     try {
-      DocumentSnapshot doc = await _remindersCollection.doc(reminderId).get();
-      if (doc.exists) {
-        return Reminder.fromFirestore(doc);
+      final snap = await _remindersRef().child(reminderId).get();
+      if (snap.exists && snap.value is Map) {
+        final data = Map<String, dynamic>.from(snap.value as Map);
+        return Reminder.fromRealtime(reminderId, data);
       }
       return null;
     } catch (e) {

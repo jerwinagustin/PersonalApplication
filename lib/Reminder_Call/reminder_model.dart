@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Reminder {
   final String id;
   final String name;
@@ -23,46 +21,38 @@ class Reminder {
     required this.createdAt,
   });
 
-  factory Reminder.fromFirestore(DocumentSnapshot doc) {
-    try {
-      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-      return Reminder(
-        id: doc.id,
-        name: data['name'] ?? '',
-        reminderText: data['reminderText'] ?? '',
-        timeFrom: data['timeFrom'] ?? '',
-        timeTo: data['timeTo'] ?? '',
-        location: data['location'] ?? '',
-        date: data['date'] != null
-            ? (data['date'] as Timestamp).toDate()
-            : DateTime.now(),
-        timeOfDay: data['timeOfDay'] ?? '',
-        createdAt: data['createdAt'] != null
-            ? (data['createdAt'] as Timestamp).toDate()
-            : DateTime.now(),
-      );
-    } catch (e) {
-      print('Error parsing reminder from Firestore: $e');
-      rethrow;
-    }
+  factory Reminder.fromRealtime(String id, Map<String, dynamic> data) {
+    final dateMillis = data['date'] is int
+        ? data['date'] as int
+        : int.tryParse('${data['date']}') ?? DateTime.now().millisecondsSinceEpoch;
+    final createdMillis = data['createdAt'] is int
+        ? data['createdAt'] as int
+        : int.tryParse('${data['createdAt']}') ?? DateTime.now().millisecondsSinceEpoch;
+
+    return Reminder(
+      id: id,
+      name: (data['name'] ?? '') as String,
+      reminderText: (data['reminderText'] ?? '') as String,
+      timeFrom: (data['timeFrom'] ?? '') as String,
+      timeTo: (data['timeTo'] ?? '') as String,
+      location: (data['location'] ?? '') as String,
+      date: DateTime.fromMillisecondsSinceEpoch(dateMillis),
+      timeOfDay: (data['timeOfDay'] ?? '') as String,
+      createdAt: DateTime.fromMillisecondsSinceEpoch(createdMillis),
+    );
   }
 
-  Map<String, dynamic> toFirestore() {
-    try {
-      return {
-        'name': name,
-        'reminderText': reminderText,
-        'timeFrom': timeFrom,
-        'timeTo': timeTo,
-        'location': location,
-        'date': Timestamp.fromDate(date),
-        'timeOfDay': timeOfDay,
-        'createdAt': Timestamp.fromDate(createdAt),
-      };
-    } catch (e) {
-      print('Error converting reminder to Firestore: $e');
-      rethrow;
-    }
+  Map<String, dynamic> toRealtime() {
+    return {
+      'name': name,
+      'reminderText': reminderText,
+      'timeFrom': timeFrom,
+      'timeTo': timeTo,
+      'location': location,
+      'date': date.millisecondsSinceEpoch,
+      'timeOfDay': timeOfDay,
+      'createdAt': createdAt.millisecondsSinceEpoch,
+    };
   }
 
   String get formattedTimeRange => '$timeFrom - $timeTo';

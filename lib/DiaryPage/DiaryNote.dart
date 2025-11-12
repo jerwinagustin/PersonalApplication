@@ -113,10 +113,10 @@ class _Diarynote extends State<Diarynote> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pushReplacementNamed(context, Navigation.id);
-              },
+          onPressed: () {
+            Navigator.of(context).pop();
+            Navigator.pop(context);
+          },
               child: Text(
                 'OK',
                 style: TextStyle(color: Color(0xFF3B1B9C), fontFamily: 'Inter'),
@@ -203,10 +203,7 @@ class _Diarynote extends State<Diarynote> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        Navigator.pushReplacementNamed(
-                                          context,
-                                          Navigation.id,
-                                        );
+                                        Navigator.of(context).pop();
                                       },
                                       child: Icon(
                                         Icons.arrow_back,
