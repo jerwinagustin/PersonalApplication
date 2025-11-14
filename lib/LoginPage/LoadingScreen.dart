@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../NavigationBar/Navigation.dart';
 import '../Responsiveness/Responsive.dart';
+import '../LoginPage/Login_Register_Page.dart';
 
 class LoadingScreen extends StatefulWidget {
   static const String id = 'loadingScreen';
@@ -48,9 +50,12 @@ class _LoadingScreenState extends State<LoadingScreen>
 
   Future<void> _navigateToMainApp() async {
     await Future.delayed(const Duration(seconds: 3));
-
-    if (mounted) {
+    if (!mounted) return;
+    final isLoggedIn = FirebaseAuth.instance.currentUser != null;
+    if (isLoggedIn) {
       Navigator.pushReplacementNamed(context, Navigation.id);
+    } else {
+      Navigator.pushReplacementNamed(context, LoginPage.id);
     }
   }
 

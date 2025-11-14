@@ -653,9 +653,19 @@ class _LoginPageState extends State<LoginPage> {
           child: ElevatedButton(
             onPressed: () async {
               try {
-                await authService.value.signInWithGoogle();
+                final result = await authService.value.signInWithGoogle();
                 if (!mounted) return;
-                Navigator.pushReplacementNamed(context, LoadingScreen.id);
+                if (result != null && authService.value.currentUser != null) {
+                  Navigator.pushReplacementNamed(context, LoadingScreen.id);
+                } else {
+                  setState(() {
+                    errorMessage = 'Google Sign-In was canceled.';
+                  });
+                }
+              } on FirebaseAuthException catch (e) {
+                setState(() {
+                  errorMessage = e.message ?? 'Google Sign-In failed. Please try again.';
+                });
               } catch (e) {
                 setState(() {
                   errorMessage = 'Google Sign-In failed. Please try again.';

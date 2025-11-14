@@ -105,7 +105,7 @@ class _Logout extends State<Logout> with TickerProviderStateMixin {
       
       if (success) {
         if (mounted) {
-          Navigator.of(context).popUntil((route) => route.isFirst);
+          Navigator.pushNamedAndRemoveUntil(context, LoginPage.id, (route) => false);
         }
       } else {
         // Handle sign out failure

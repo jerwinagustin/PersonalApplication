@@ -110,7 +110,12 @@ class Authservice {
       );
 
       // Sign out from Google first
-      await googleSignIn.signOut();
+      try {
+        await googleSignIn.signOut();
+      } catch (_) {}
+      try {
+        await googleSignIn.disconnect();
+      } catch (_) {}
       
       // Then sign out from Firebase
       await firebaseAuth.signOut();
@@ -140,12 +145,16 @@ class Authservice {
         return false;
       }
 
-      // Sign out from Google services
+      // Sign out and disconnect Google services
       try {
         await googleSignIn.signOut();
       } catch (e) {
         print('Google sign out error: $e');
-        // Continue with Firebase sign out even if Google fails
+      }
+      try {
+        await googleSignIn.disconnect();
+      } catch (e) {
+        print('Google disconnect error: $e');
       }
       
       // Sign out from Firebase

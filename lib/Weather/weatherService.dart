@@ -54,7 +54,48 @@ class Weatherservice {
       print('Weather API Response Body: ${response.body}'); // Debug print
 
       if (response.statusCode == 200) {
-        return WeatherApiFetch.fromJson(jsonDecode(response.body));
+        final data = jsonDecode(response.body);
+
+        String resolvedLocationName = data['name'] ?? 'Current Location';
+        if (location.contains(",")) {
+          try {
+            final parts = location.split(",");
+            final lat = double.parse(parts[0]);
+            final lon = double.parse(parts[1]);
+            final placemarks = await placemarkFromCoordinates(lat, lon);
+            if (placemarks.isNotEmpty) {
+              final p = placemarks.first;
+              resolvedLocationName = '${p.locality ?? p.subAdministrativeArea ?? p.administrativeArea ?? 'Current Location'}';
+              if (p.administrativeArea != null && p.administrativeArea != p.locality) {
+                resolvedLocationName += ', ${p.administrativeArea}';
+              }
+            }
+          } catch (_) {}
+        }
+
+        final windSpeed = data['wind']?['speed'] ?? 0;
+        final windMs = (windSpeed is int) ? windSpeed.toDouble() : windSpeed.toDouble();
+        final windKmh = windMs * 3.6;
+
+        int chanceOfRain = 0;
+        if (data['rain'] != null) {
+          chanceOfRain = 100;
+        }
+
+        final temp = data['main']['temp'];
+        final temperature = (temp is int) ? temp.toDouble() : temp.toDouble();
+
+        final humidity = data['main']['humidity'];
+        final humidityValue = (humidity is int) ? humidity.toDouble() : humidity.toDouble();
+
+        return WeatherApiFetch(
+          locationName: resolvedLocationName,
+          temperature: temperature,
+          Wind: windKmh,
+          Humidity: humidityValue,
+          chance_of_rain: chanceOfRain,
+          mainCondition: data['weather'][0]['main'],
+        );
       } else {
         throw Exception(
           'Failed to load weather data: ${response.statusCode} - ${response.body}',
@@ -165,15 +206,34 @@ class Weatherservice {
         throw Exception("⚠ Location permission denied.");
       }
 
-      print('Getting current position...'); // Debug print
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: Duration(seconds: 10),
-      );
+      print('Checking location services...');
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        throw Exception('⚠ Location services disabled.');
+      }
 
-      print(
-        'Position obtained: ${position.latitude}, ${position.longitude}',
-      ); // Debug print
+      print('Getting current position...');
+      Position? position;
+      try {
+        position = await Geolocator.getCurrentPosition(
+          locationSettings: LocationSettings(
+            accuracy: LocationAccuracy.high,
+            timeLimit: Duration(seconds: 20),
+          ),
+        );
+      } on TimeoutException {
+        print('Location timeout, trying last known position...');
+        position = await Geolocator.getLastKnownPosition();
+      } catch (_) {
+        print('Error getting current position, trying last known...');
+        position = await Geolocator.getLastKnownPosition();
+      }
+
+      if (position == null) {
+        throw Exception('⚠ Unable to determine location.');
+      }
+
+      print('Position obtained: ${position.latitude}, ${position.longitude}');
       return "${position.latitude},${position.longitude}";
     } catch (e) {
       print('Error getting location: $e');
